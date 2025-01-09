@@ -1,10 +1,12 @@
 import { API_AUTH } from '../../utils/Endpoints';
 import axios, { AxiosError } from 'axios';
 import api from '../../services/api';
-import { LoginResponse, LoginRequest } from "../../interfaces/user/login";
+import { LoginResponse , LoginRequest} from "../../interfaces/user/login";
 
 export const signin = async ({ email, password }: LoginRequest): Promise<LoginResponse> => {
   try {
+    console.log('Solicitud al servidor:', { email, password });
+
     const response = await api.post(API_AUTH, { email, password });
     return response.data;;
   } catch (error) {

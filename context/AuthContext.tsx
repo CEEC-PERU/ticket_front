@@ -44,46 +44,49 @@ const refreshProfile = async (token: string, userId: number) => {
   }
 };
 
-  const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      const response: LoginResponse = await signin({ email, password });
-      if (response.token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
-        const decodedToken: { id: number; role: number; email: string; is_active: boolean } = jwtDecode(response.token);
-        setToken(response.token);
-        setUser({ id: decodedToken.id, role: decodedToken.role, email: decodedToken.email , is_active: decodedToken.is_active });
+const login = async (email: string, password: string) => {
+  setIsLoading(true);
+  try {
+    const response: LoginResponse = await signin({ email, password });
+    if (response.token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
+      const decodedToken: { id: number; role: number; email: string; is_active: boolean } = jwtDecode(response.token);
+      setToken(response.token);
+      setUser({ id: decodedToken.id, role: decodedToken.role, email: decodedToken.email , is_active: decodedToken.is_active });
 
-        localStorage.setItem('userToken', response.token);
-        localStorage.setItem('userInfo', JSON.stringify({
-          id: decodedToken.id,
-          role: decodedToken.role,
-          email: decodedToken.email,
-          is_active: decodedToken.is_active
-        }));
-        
-        socket.emit('login', { userToken: response.token });
-        
-       
-      } else {
-        setError(response.msg ?? 'Hubo un problema al iniciar sesión. Por favor, inténtalo de nuevo.');
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 401) {
-          setError('Error al iniciar sesión, datos ingresados incorrectos.');
-        } else {
-          setError('Ocurrió un error al iniciar sesión. Inténtalo nuevamente.');
-        }
-      } else if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('Ocurrió un error inesperado.');
-      }
-    } finally {
-      setIsLoading(false);
+      localStorage.setItem('userToken', response.token);
+      localStorage.setItem('userInfo', JSON.stringify({
+        id: decodedToken.id,
+        role: decodedToken.role,
+        email: decodedToken.email,
+        is_active: decodedToken.is_active
+      }));
+      
+      socket.emit('login', { userToken: response.token });
+      
+      // Redirect based on user role after login
+      redirectToDashboard(decodedToken.role);  // Redirection based on role
+
+    } else {
+      setError(response.msg ?? 'Hubo un problema al iniciar sesión. Por favor, inténtalo de nuevo.');
     }
-  };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        setError('Error al iniciar sesión, datos ingresados incorrectos.');
+      } else {
+        setError('Ocurrió un error al iniciar sesión. Inténtalo nuevamente.');
+      }
+    } else if (error instanceof Error) {
+      setError(error.message);
+    } else {
+      setError('Ocurrió un error inesperado.');
+    }
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const logout = () => {
     localStorage.removeItem('userToken');
