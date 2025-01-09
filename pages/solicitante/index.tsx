@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Navbar from "../../components/solicitante/navbar";
+import Navbar from "../../components/solicitante/Navbar";
 import SidebarAdmin from "../../components/solicitante/DrawerSolicitante";
 import "./../../app/globals.css";
 
