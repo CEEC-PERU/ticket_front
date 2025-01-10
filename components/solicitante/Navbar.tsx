@@ -17,12 +17,12 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  bgColor = 'bg-blue-600',
+  bgColor = ' bg-gradient-to-r from-[#682cd8] via-[#7959ef]  to-[#f428e1] text-white',
   textColor = 'text-white',
   fontSize = 'text-2xl',
   fontFamily = 'font-sans',
   paddingtop= 'pt-0',
-  navbarHeight = 'h-16',
+  navbarHeight = 'h-20',
   toggleSidebar,
   borderColor,
   showMenuButton = true,
@@ -43,11 +43,11 @@ const Navbar: React.FC<NavbarProps> = ({
           )}
           <div className={`${showMenuButton ? 'ml-2' : ''} flex items-center`}>
             <img
-              src="https://res.cloudinary.com/dk2red18f/image/upload/v1731423713/hwbpbm4avbxvptowwjzp.png"
+              src="https://res.cloudinary.com/dk2red18f/image/upload/v1736456728/Ticket-Qtech/rcgldy7apjzy3biwwori.png"
               alt="EducaWeb Logo"
-              className="h-10"
+              className="h-10 "
             />
-            <h2 className="text-white font-bold pl-2">Mininazen</h2>
+            <h2 className="text-white font-bold pl-2"></h2>
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -55,13 +55,13 @@ const Navbar: React.FC<NavbarProps> = ({
             <>
               <Link href="/student">
                 <button className="flex items-center p-4 text-white hover:bg-brand-200 w-full text-left">
-                 
+                 dfgdf
                 </button>
               </Link>
           
               <Link href="/student">
                 <button className="flex items-center p-4 text-white hover:bg-brand-200 w-full text-left">
-                 
+                 fdgd
                 </button>
               </Link>
             </>

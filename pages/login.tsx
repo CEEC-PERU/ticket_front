@@ -42,11 +42,24 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 gap-8">
-      <h1 className="text-4xl font-bold">Iniciar Sesión</h1>
-      <form className="flex flex-col gap-4 w-full max-w-sm" onSubmit={handleLogin}>
+    <div className="flex flex-col items-center justify-center  absolute inset-0 min-h-screen p-8 bg-white text-white">
+      {/* Logo */}
+      <img
+        src="https://res.cloudinary.com/dk2red18f/image/upload/v1736456728/Ticket-Qtech/qezajo2gt28smeku6e7e.png"
+        alt="Logo"
+        className="w-50 h-32 mb-4 "
+      />
+
+    
+
+      {/* Form */}
+      <form
+        className="flex flex-col gap-4 w-full max-w-sm bg-white text-black p-6 rounded-lg shadow-lg"
+        onSubmit={handleLogin}
+      >
+        {/* Email Input */}
         <div>
-          <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
+          <label htmlFor="email" className="block mb-2 text-sm font-medium">
             Correo electrónico
           </label>
           <input
@@ -58,8 +71,10 @@ export default function Login() {
             className="p-3 border rounded w-full"
           />
         </div>
+
+        {/* Password Input */}
         <div className="relative">
-          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
+          <label htmlFor="password" className="block mb-2 text-sm font-medium">
             Contraseña
           </label>
           <input
@@ -108,14 +123,16 @@ export default function Login() {
             )}
           </button>
         </div>
+
+        {/* Error Message */}
         {showAlert && (
-          <div className="text-red-500 text-sm mt-2">
-            {errorMessage}
-          </div>
+          <div className="text-red-500 text-sm mt-2">{errorMessage}</div>
         )}
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="px-6 py-3 bg-gradient-to-r from-[#682cd8] via-[#7959ef]  to-[#f428e1] text-white rounded-lg hover:opacity-90"
         >
           Iniciar Sesión
         </button>

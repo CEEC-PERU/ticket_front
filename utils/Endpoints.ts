@@ -11,10 +11,14 @@ export const API_AUTH = `${baseURL}/api/auth/signin`;
 // videos
 export const API_PROFILE = `${baseURL}/api/profiles`;
 
-// videos
-export const API_VIDEOS = `${baseURL}/api/videos`;
+// clients
+export const API_TYPE_CLIENT= `${baseURL}/api/typeclients`;
 
+// campaigns
+export const API_CAMPAIGNS = `${baseURL}/api/campaigns`;
 
-// imagenes
-export const API_IMAGES = `${baseURL}/api/images`;
+// TYPE MANAGEMENT
+export const API_TYPE_MANAGEMENT = `${baseURL}/api/typemanagement`;
 
+// Detail Management
+export const API_DETAIL_MANAGEMENT = `${baseURL}/api/detailmanagement`;
