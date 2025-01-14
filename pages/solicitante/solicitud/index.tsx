@@ -5,46 +5,49 @@ import { useDetailManagement } from '../../../hooks/management/useDetailManageme
 import { useTypeManagement } from '../../../hooks/management/useTypeManagement';
 import Navbar from '../../../components/solicitante/Navbar';
 import DrawerSolicitante from '../../../components/solicitante/DrawerSolicitante';
+import Alert from '../../../components/solicitante/Form/Alert';
+import FileInput from '../../../components/solicitante/Form/FileInput';
+import useFormValidation from '../../../hooks/form/useFormValidation';
 import './../../../app/globals.css';
 
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [selectedClientId, setSelectedClientId] = useState<number | null>(null); // Estado para almacenar el client_id seleccionado
-  const [selectedManagementId, setSelectedManagementId] = useState<number | null>(null); // Estado para almacenar el management_id seleccionado
-  const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null); // Estado para almacenar la campaña seleccionada
-  const [step, setStep] = useState(1); // Estado para controlar el paso del formulario
+  const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
+  const [selectedManagementId, setSelectedManagementId] = useState<number | null>(null);
+  const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
+  const [step, setStep] = useState(1);
 
   const { typeClients, loading, error } = useTypeClients();
   const { typeManagement } = useTypeManagement();
   const { campaigns } = useCampaings(selectedClientId as number);
   const { detailManagement } = useDetailManagement(selectedManagementId as number);
 
-  // Estado para el formulario
   const [formData, setFormData] = useState({
     clientId: '',
     campaignId: '',
     managementId: '',
     detailManagementId: '',
-    requestDetails: '', // Detalle de la solicitud
-    attachedDocuments: [] as File[], // Archivos adjuntos
+    requestDetails: '',
+    attachedDocuments: [] as File[],
   });
 
-  // Manejar el cambio de cliente
+  const { errors, validateStep1, validateStep2 } = useFormValidation();
+
   const handleClientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = parseInt(event.target.value, 10);
-    setSelectedClientId(clientId); // Actualizar el estado con el client_id seleccionado
+    setSelectedClientId(clientId);
     setFormData((prevData) => ({ ...prevData, clientId: event.target.value }));
   };
 
   const handleManagementChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const managementId = parseInt(event.target.value, 10);
-    setSelectedManagementId(managementId); // Actualizar el estado con el management_id seleccionado
+    setSelectedManagementId(managementId);
     setFormData((prevData) => ({ ...prevData, managementId: event.target.value }));
   };
 
   const handleCampaignChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const campaignId = parseInt(event.target.value, 10);
-    setSelectedCampaignId(campaignId); // Actualizar el estado con el campaign_id seleccionado
+    setSelectedCampaignId(campaignId);
     setFormData((prevData) => ({ ...prevData, campaignId: event.target.value }));
   };
 
@@ -57,27 +60,43 @@ export default function Solicitud() {
     setFormData((prevData) => ({ ...prevData, requestDetails: event.target.value }));
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      setFormData((prevData) => ({
-        ...prevData,
-        attachedDocuments: Array.from(files),
-      }));
-    }
+  const handleFileChange = (files: File[]) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      attachedDocuments: files,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData); // Aquí puedes enviar los datos al servidor
+    console.log(formData);
   };
+
+ 
+
+  const handleNextStep = () => {
+    if (step === 1) {
+      const isValid = validateStep1(
+        formData.clientId,
+        formData.campaignId,
+        formData.managementId,
+        formData.detailManagementId // Pass the detailManagementId to validation
+      );
+      if (isValid) {
+        setStep(2);
+      }
+    } else if (step === 2) {
+      const isValid = validateStep2(formData.requestDetails, formData.attachedDocuments);
+      if (isValid) {
+        // Your submit logic goes here (if needed)
+      }
+    }
+  };
+  
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-gray-50 text-black">
-      {/* Sidebar */}
       <DrawerSolicitante showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
-
-      {/* Main Content */}
       <div
         className={`flex-1 p-6 transition-all duration-300 text-black ${
           showSidebar ? 'ml-64' : 'ml-16'
@@ -89,13 +108,27 @@ export default function Solicitud() {
         />
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-6 text-black">Formulario de Solicitud</h1>
-          {/* Form Section */}
+
+          {/* Progress Bar */}
+          <div className="relative mb-8">
+            <div className="flex justify-between mb-2">
+              <div className="w-1/3 text-center">Paso 1</div>
+              <div className="w-1/3 text-center">Paso 2</div>
+            </div>
+            <div className="relative w-full h-1 bg-gray-300">
+              <div
+                className={`absolute top-0 left-0 h-1 bg-purple-500 transition-all duration-300`}
+                style={{ width: `${(step / 2) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {errors.length > 0 && <Alert message={errors.join(' ')} type="error" />}
+
           <form className="bg-white p-6 rounded-lg shadow-lg space-y-6" onSubmit={handleSubmit}>
-            
             {/* Paso 1 */}
             {step === 1 && (
               <>
-                {/* Tipo de Cliente */}
                 <div className="mb-4">
                   <label htmlFor="cliente" className="block text-lg font-semibold mb-2">Tipo de Cliente</label>
                   <select
@@ -113,7 +146,6 @@ export default function Solicitud() {
                   </select>
                 </div>
 
-                {/* Mostrar Campañas */}
                 {selectedClientId && (
                   <div className="mb-4">
                     <label htmlFor="campaign" className="block text-lg font-semibold mb-2">Campaña</label>
@@ -133,7 +165,6 @@ export default function Solicitud() {
                   </div>
                 )}
 
-                {/* Tipo de Gestión */}
                 <div className="mb-4">
                   <label htmlFor="management" className="block text-lg font-semibold mb-2">Tipo de Gestión</label>
                   <select
@@ -151,13 +182,13 @@ export default function Solicitud() {
                   </select>
                 </div>
 
-                {/* Detalle de Gestión */}
                 {selectedManagementId && (
                   <div className="mb-4">
                     <label htmlFor="detailManagement" className="block text-lg font-semibold mb-2">Detalle de Gestión</label>
                     <select
                       id="detailManagement"
                       className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#682cd8] transition"
+
                       value={formData.detailManagementId}
                       onChange={handleDetailManagementChange}
                     >
@@ -171,11 +202,10 @@ export default function Solicitud() {
                   </div>
                 )}
 
-                {/* Botón para pasar al paso 2 */}
                 <button
                   type="button"
                   className="w-full bg-[#682cd8] text-white py-3 px-6 rounded-lg font-semibold hover:bg-gradient-to-l transition duration-300"
-                  onClick={() => setStep(2)}
+                  onClick={handleNextStep}
                 >
                   Siguiente
                 </button>
@@ -185,42 +215,38 @@ export default function Solicitud() {
             {/* Paso 2 */}
             {step === 2 && (
               <>
-                {/* Detallar Solicitud */}
                 <div className="mb-4">
-                  <label htmlFor="requestDetails" className="block text-lg font-semibold mb-2">Detallar Solicitud</label>
+                  <label htmlFor="requestDetails" className="block text-lg font-semibold mb-2">
+                    Detalles de la Solicitud
+                  </label>
                   <textarea
                     id="requestDetails"
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#682cd8] transition"
-                    rows={6}
+                    rows={4}
+                    placeholder='EXPLIQUE CORRECTAMENTE Y DETALLADAMENTE LA SOLICITUD'
                     value={formData.requestDetails}
                     onChange={handleRequestDetailsChange}
-                    placeholder="Explica detalladamente tu solicitud"
                   />
                 </div>
 
-                {/* Adjuntar Documentos */}
+               
+
                 <div className="mb-4">
-                  <label htmlFor="attachedDocuments" className="block text-lg font-semibold mb-2">Adjuntar Documentos</label>
-                  <p className="text-sm text-gray-500 mb-2">
-                    CAPTURAS EN CASO DE ERROR<br />
-                    ARCHIVOS EN CASO DE CREACIÓN DE PLANTILLAS DE CALIDAD<br />
-                    ARCHIVOS CON LAS FRASEOLOGÍAS EN CASO DE CREACIÓN DE CATEGORÍA
+                  <label htmlFor="attachedDocuments" className="block text-lg font-semibold mb-2">
+                    Adjuntar Documentos
+                  </label>
+                  <p className="text-gray-600 text-sm ">
+                   ej. Capturas en caso de error , archivos en caso de creación de plantillas de calidad , archivos con las fraseologías en caso de creación de categoría
                   </p>
-                  <input
-                    id="attachedDocuments"
-                    type="file"
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#682cd8] transition"
-                    multiple
-                    onChange={handleFileChange}
-                  />
+                  <FileInput onChange={handleFileChange} />
                 </div>
 
-                {/* Botón de Enviar */}
                 <button
-                  type="submit"
+                  type="button"
                   className="w-full bg-[#682cd8] text-white py-3 px-6 rounded-lg font-semibold hover:bg-gradient-to-l transition duration-300"
+                  onClick={handleNextStep}
                 >
-                  Enviar Solicitud
+                  Finalizar
                 </button>
               </>
             )}
