@@ -8,8 +8,9 @@ import DrawerSolicitante from '../../../components/solicitante/DrawerSolicitante
 import Alert from '../../../components/solicitante/Form/Alert';
 import FileInput from '../../../components/solicitante/Form/FileInput';
 import useFormValidation from '../../../hooks/form/useFormValidation';
+import { submitSolicitud } from '../../../services/ticket/submitTicket';
 import './../../../app/globals.css';
-
+import { useAuth } from '../../../context/AuthContext';
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
@@ -21,17 +22,25 @@ export default function Solicitud() {
   const { typeManagement } = useTypeManagement();
   const { campaigns } = useCampaings(selectedClientId as number);
   const { detailManagement } = useDetailManagement(selectedManagementId as number);
-
+  const { user, token } = useAuth();
+  const userInfor = user as { id: number };
   const [formData, setFormData] = useState({
     clientId: '',
     campaignId: '',
     managementId: '',
+    title: '',
     detailManagementId: '',
     requestDetails: '',
     attachedDocuments: [] as File[],
+    user_id: userInfor.id
   });
 
   const { errors, validateStep1, validateStep2 } = useFormValidation();
+
+
+
+
+
 
   const handleClientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = parseInt(event.target.value, 10);
@@ -51,6 +60,10 @@ export default function Solicitud() {
     setFormData((prevData) => ({ ...prevData, campaignId: event.target.value }));
   };
 
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({ ...prevData, title: event.target.value }));
+  };
+
   const handleDetailManagementChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const detailManagementId = parseInt(event.target.value, 10);
     setFormData((prevData) => ({ ...prevData, detailManagementId: event.target.value }));
@@ -67,10 +80,45 @@ export default function Solicitud() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+
+
+
+
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  // Check if userInfor.id is available
+  if (!userInfor?.id) {
+    alert('User ID is missing. Please log in again.');
+    return;
+  }
+
+  const form = new FormData();
+  form.append("clientId", formData.clientId);
+  form.append("campaignId", formData.campaignId);
+  form.append("managementId", formData.managementId);
+  form.append("title", formData.title);
+  form.append("detailManagementId", formData.detailManagementId);
+  form.append("requestDetails", formData.requestDetails);
+
+  // Ensure user_id is included correctly
+  form.append("user_id", userInfor.id.toString());  // Convert to string if needed
+
+  // Append the files to the form data
+  formData.attachedDocuments.forEach(file => {
+    form.append("materials", file);
+  });
+
+  try {
+    const response = await submitSolicitud(form); // Submit the FormData
+    console.log('Solicitud enviada exitosamente:', response.data);
+    alert('Solicitud enviada con éxito.');
+  } catch (error) {
+    console.error('Error al enviar la solicitud:', error);
+    alert('Hubo un error al enviar la solicitud. Inténtelo de nuevo.');
+  }
+};
 
  
 
@@ -80,7 +128,8 @@ export default function Solicitud() {
         formData.clientId,
         formData.campaignId,
         formData.managementId,
-        formData.detailManagementId // Pass the detailManagementId to validation
+        formData.detailManagementId, // Pass the detailManagementId to validation
+        formData.title
       );
       if (isValid) {
         setStep(2);
@@ -129,6 +178,16 @@ export default function Solicitud() {
             {/* Paso 1 */}
             {step === 1 && (
               <>
+                 <div className="mb-4">
+                  <label htmlFor="cliente" className="block text-lg font-semibold mb-2">Titulo</label>
+                  <input
+                    id="cliente"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#682cd8] transition"
+                    value={formData.title}
+                    onChange={handleTitleChange}
+                   ></input>
+                </div>
+
                 <div className="mb-4">
                   <label htmlFor="cliente" className="block text-lg font-semibold mb-2">Tipo de Cliente</label>
                   <select
@@ -229,8 +288,6 @@ export default function Solicitud() {
                   />
                 </div>
 
-               
-
                 <div className="mb-4">
                   <label htmlFor="attachedDocuments" className="block text-lg font-semibold mb-2">
                     Adjuntar Documentos
@@ -244,7 +301,7 @@ export default function Solicitud() {
                 <button
                   type="button"
                   className="w-full bg-[#682cd8] text-white py-3 px-6 rounded-lg font-semibold hover:bg-gradient-to-l transition duration-300"
-                  onClick={handleNextStep}
+                  onClick={handleSubmit}
                 >
                   Finalizar
                 </button>

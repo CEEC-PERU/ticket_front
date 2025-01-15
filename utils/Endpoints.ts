@@ -1,23 +1,25 @@
-
 export const baseURL = `http://localhost:4100`;
 
 //socket
 export const API_SOCKET_URL = `http://localhost:4100`;
 
-// authentication
+//authentication
 export const API_AUTH = `${baseURL}/api/auth/signin`;
 
-// videos
+//videos
 export const API_PROFILE = `${baseURL}/api/profiles`;
 
-// clients
+//clients
 export const API_TYPE_CLIENT= `${baseURL}/api/typeclients`;
 
-// campaigns
+//campaigns
 export const API_CAMPAIGNS = `${baseURL}/api/campaigns`;
 
-// TYPE MANAGEMENT
+//TYPE MANAGEMENT
 export const API_TYPE_MANAGEMENT = `${baseURL}/api/typemanagement`;
 
-// Detail Management
+//Detail Management
 export const API_DETAIL_MANAGEMENT = `${baseURL}/api/detailmanagement`;
+
+//ticket
+export const API_TICKET = `${baseURL}/api/ticket`;

@@ -7,13 +7,16 @@ const useFormValidation = () => {
     clientId: string,
     campaignId: string,
     managementId: string,
-    detailManagementId: string
+    detailManagementId: string,
+    title: string,
   ): boolean => {
     const errorMessages: string[] = [];
     if (!clientId) errorMessages.push('El cliente es obligatorio.');
     if (!campaignId) errorMessages.push('La campaña es obligatoria.');
     if (!managementId) errorMessages.push('El tipo de gestión es obligatorio.');
     if (!detailManagementId) errorMessages.push('El detalle de gestión es obligatorio.');
+    if (!title) errorMessages.push('El titulo es obligatorio.');
+    
     setErrors(errorMessages);
     return errorMessages.length === 0;
   };

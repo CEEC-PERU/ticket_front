@@ -44,6 +44,7 @@ const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
         <input
           type="file"
           multiple
+          name='materials'
           className="p-3 border rounded-lg text-black pt-5"
           onChange={handleFileChange}
         />
