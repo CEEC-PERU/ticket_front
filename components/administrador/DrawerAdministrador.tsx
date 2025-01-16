@@ -37,7 +37,7 @@ const DrawerSolicitante: React.FC<SidebarAdminProps> = ({ showSidebar, setShowSi
         <ul className="mt-4">
           <li>
             <button
-              onClick={() => handleNavigation('/solicitante')}
+              onClick={() => handleNavigation('/administrador')}
               className="flex items-center p-4 text-white hover:bg-[#7959ef] w-full text-left"
             >
               <HomeIcon className="h-6 w-6" />
@@ -46,22 +46,14 @@ const DrawerSolicitante: React.FC<SidebarAdminProps> = ({ showSidebar, setShowSi
           </li>
           <li>
             <button
-              onClick={() => handleNavigation('/solicitante/solicitud')}
+              onClick={() => handleNavigation('/administrador/solicitud')}
               className="flex items-center p-4 text-white hover:bg-[#7959ef] w-full text-left"
             >
               <HomeIcon className="h-6 w-6"  />
-              {showSidebar && <span className="ml-2 text-white">Registrar Solicitud</span>}
+              {showSidebar && <span className="ml-2 text-white">Solicitudes</span>}
             </button>
           </li>
-          <li>
-            <button
-              onClick={() => handleNavigation('/solicitante/solicitud/enviado')}
-              className="flex items-center p-4 text-white hover:bg-[#7959ef] w-full text-left"
-            >
-              <HomeIcon className="h-6 w-6"  />
-              {showSidebar && <span className="ml-2 text-white">Lista de Solicitud</span>}
-            </button>
-          </li>
+         
           <li>
               <button
                 onClick={logout}

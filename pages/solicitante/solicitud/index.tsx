@@ -17,13 +17,16 @@ export default function Solicitud() {
   const [selectedManagementId, setSelectedManagementId] = useState<number | null>(null);
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   const [step, setStep] = useState(1);
-
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado de cargando
   const { typeClients, loading, error } = useTypeClients();
   const { typeManagement } = useTypeManagement();
   const { campaigns } = useCampaings(selectedClientId as number);
   const { detailManagement } = useDetailManagement(selectedManagementId as number);
   const { user, token } = useAuth();
   const userInfor = user as { id: number };
+  const [numberTicket, setNumberTicket] = useState<string | null>(null); // Guarda el número del ticket generado
+
+
   const [formData, setFormData] = useState({
     clientId: '',
     campaignId: '',
@@ -85,10 +88,10 @@ export default function Solicitud() {
 
 
 
+
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-  
-  // Check if userInfor.id is available
+
   if (!userInfor?.id) {
     alert('User ID is missing. Please log in again.');
     return;
@@ -101,19 +104,28 @@ const handleSubmit = async (e: React.FormEvent) => {
   form.append("title", formData.title);
   form.append("detailManagementId", formData.detailManagementId);
   form.append("requestDetails", formData.requestDetails);
+  form.append("user_id", userInfor.id.toString());
 
-  // Ensure user_id is included correctly
-  form.append("user_id", userInfor.id.toString());  // Convert to string if needed
-
-  // Append the files to the form data
-  formData.attachedDocuments.forEach(file => {
+  formData.attachedDocuments.forEach((file) => {
     form.append("materials", file);
   });
 
   try {
+    setIsSubmitting(true);
     const response = await submitSolicitud(form); // Submit the FormData
-    console.log('Solicitud enviada exitosamente:', response.data);
-    alert('Solicitud enviada con éxito.');
+    console.log('response:', response);
+  
+
+    if (response && response.number_ticket) {
+      const { number_ticket } = response; // Ahora accedes correctamente
+      setNumberTicket(number_ticket);
+      console.log('Ticket generado:', number_ticket);
+      setStep(3); // Ir al paso de éxito
+    } else {
+      console.error('El campo number_ticket no está definido en response:', response);
+      alert('Error: No se pudo generar el número de ticket.');
+    }
+    
   } catch (error) {
     console.error('Error al enviar la solicitud:', error);
     alert('Hubo un error al enviar la solicitud. Inténtelo de nuevo.');
@@ -141,10 +153,27 @@ const handleSubmit = async (e: React.FormEvent) => {
       }
     }
   };
+
+
+  const handleNewRequest = () => {
+    setFormData({
+      clientId: '',
+      campaignId: '',
+      managementId: '',
+      title: '',
+      detailManagementId: '',
+      requestDetails: '',
+      attachedDocuments: [],
+      user_id: userInfor.id,
+    });
+    setNumberTicket(null);
+    setStep(1);
+  };
+
   
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 text-black">
+    <div className="flex flex-col lg:flex-row h-screen  bg-white text-black">
       <DrawerSolicitante showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div
         className={`flex-1 p-6 transition-all duration-300 text-black ${
@@ -173,7 +202,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           {errors.length > 0 && <Alert message={errors.join(' ')} type="error" />}
-
+          {step < 3 && (
           <form className="bg-white p-6 rounded-lg shadow-lg space-y-6" onSubmit={handleSubmit}>
             {/* Paso 1 */}
             {step === 1 && (
@@ -298,16 +327,42 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <FileInput onChange={handleFileChange} />
                 </div>
 
+                
                 <button
-                  type="button"
-                  className="w-full bg-[#682cd8] text-white py-3 px-6 rounded-lg font-semibold hover:bg-gradient-to-l transition duration-300"
-                  onClick={handleSubmit}
-                >
-                  Finalizar
-                </button>
+                    type="submit"
+                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition duration-300 ${
+                      isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#682cd8] hover:bg-gradient-to-l'
+                    }`}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Enviando...' : 'Finalizar'}
+                  </button>
               </>
             )}
           </form>
+           )}
+
+          {/* Ticket generado */}
+          {step === 3 && (
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+              <h2 className="text-2xl font-bold mb-4">¡Solicitud enviada con éxito!</h2>
+              <p className="text-lg mb-6">Número de ticket: <strong>{numberTicket}</strong></p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                  onClick={handleNewRequest}
+                >
+                  Nueva Solicitud
+                </button>
+                <button
+                  className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition"
+                  onClick={() => setStep(1)}
+                >
+                  Ver Solicitudes
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
