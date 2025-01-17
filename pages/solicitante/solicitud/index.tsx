@@ -25,9 +25,7 @@ export default function Solicitud() {
   const { user, token } = useAuth();
   const userInfor = user as { id: number };
   const [numberTicket, setNumberTicket] = useState<string | null>(null); // Guarda el número del ticket generado
-
-
-  const [formData, setFormData] = useState({
+ const [formData, setFormData] = useState({
     clientId: '',
     campaignId: '',
     managementId: '',
@@ -39,11 +37,6 @@ export default function Solicitud() {
   });
 
   const { errors, validateStep1, validateStep2 } = useFormValidation();
-
-
-
-
-
 
   const handleClientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = parseInt(event.target.value, 10);
@@ -82,12 +75,6 @@ export default function Solicitud() {
       attachedDocuments: files,
     }));
   };
-
-
-
-
-
-
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -132,8 +119,6 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 };
 
- 
-
   const handleNextStep = () => {
     if (step === 1) {
       const isValid = validateStep1(
@@ -155,7 +140,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   };
 
 
-  const handleNewRequest = () => {
+const handleNewRequest = () => {
     setFormData({
       clientId: '',
       campaignId: '',
@@ -168,11 +153,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
     setNumberTicket(null);
     setStep(1);
-  };
+};
 
-  
-
-  return (
+return (
     <div className="flex flex-col lg:flex-row h-screen  bg-white text-black">
       <DrawerSolicitante showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div
@@ -207,7 +190,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             {/* Paso 1 */}
             {step === 1 && (
               <>
-                 <div className="mb-4">
+                <div className="mb-4">
                   <label htmlFor="cliente" className="block text-lg font-semibold mb-2">Titulo</label>
                   <input
                     id="cliente"

@@ -12,7 +12,6 @@ import axios, { AxiosError } from 'axios';
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 const socket = io(API_SOCKET_URL);
 
-
 export const useAuth = () => {
    return useContext(AuthContext);
 };

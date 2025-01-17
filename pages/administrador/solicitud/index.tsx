@@ -3,11 +3,13 @@ import Navbar from '../../../components/solicitante/Navbar';
 import DrawerSolicitante from '../../../components/administrador/DrawerAdministrador';
 import './../../../app/globals.css';
 import Image from 'next/image';
+import { useAdminManagement } from '../../../hooks/management/useAdminManagement';
 import { motion } from 'framer-motion';
 
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
 
+  const { adminManagement } = useAdminManagement();
   return (
     <div className="flex h-screen bg-white text-black">
       {/* Drawer */}

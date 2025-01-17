@@ -21,5 +21,8 @@ export const API_TYPE_MANAGEMENT = `${baseURL}/api/typemanagement`;
 //Detail Management
 export const API_DETAIL_MANAGEMENT = `${baseURL}/api/detailmanagement`;
 
+//Admin Management
+export const API_ADMIN_MANAGEMENT = `${baseURL}/api/admin-managements`;
+
 //ticket
 export const API_TICKET = `${baseURL}/api/ticket`;
