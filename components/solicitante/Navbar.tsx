@@ -52,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
         <div className="flex items-center space-x-4">
         
-            <>
+        {/*  <>
               <Link href="/student">
                 <button className="flex items-center p-4 text-white hover:bg-brand-200 w-full text-left">
                  dfgdf
@@ -65,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 </button>
               </Link>
             </>
-         
+         */}
         </div>
       </div>
     </nav>

@@ -22,14 +22,8 @@ export default function Solicitud() {
   const { typeManagement } = useTypeManagement();
   const { campaigns } = useCampaings(selectedClientId as number);
   const { detailManagement } = useDetailManagement(selectedManagementId as number);
-
   const { user, token } = useAuth();
-  const userInfor = user as { id: number };
-  if (typeof window !== 'undefined') {
-    alert('User ID is missing. Please log in again.');
-  }
-  
-  
+  const userInfor = user as { id: number } | null;
   const [numberTicket, setNumberTicket] = useState<string | null>(null); // Guarda el número del ticket generado
  const [formData, setFormData] = useState({
     clientId: '',
@@ -39,7 +33,7 @@ export default function Solicitud() {
     detailManagementId: '',
     requestDetails: '',
     attachedDocuments: [] as File[],
-    user_id: userInfor?.id || null, 
+    user_id: userInfor?.id || 0,
   });
 
   const { errors, validateStep1, validateStep2 } = useFormValidation();
@@ -155,7 +149,7 @@ const handleNewRequest = () => {
       detailManagementId: '',
       requestDetails: '',
       attachedDocuments: [],
-      user_id: userInfor.id,
+      user_id: userInfor?.id || 0,
     });
     setNumberTicket(null);
     setStep(1);
