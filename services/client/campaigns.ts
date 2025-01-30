@@ -6,6 +6,8 @@ import { API_CAMPAIGNS } from "../../utils/Endpoints";
 // Servicio para obtener la lista de TypeClients
 export const getCampaigns = async (token: string, client_id : number): Promise<Camapign[]> => {
   try {
+    
+    console.log("token-index",token);
       const response = await axios.get(`${API_CAMPAIGNS}/client/${client_id}`, {
       headers: {
         Authorization: `Bearer ${token}`,

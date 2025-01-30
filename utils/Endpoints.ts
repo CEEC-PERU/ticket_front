@@ -26,3 +26,6 @@ export const API_ADMIN_MANAGEMENT = `${baseURL}/api/admin-managements`;
 
 //ticket
 export const API_TICKET = `${baseURL}/api/ticket`;
+
+//niveles -importancia ticket
+export const API_LEVELS = `${baseURL}/api/levels`;

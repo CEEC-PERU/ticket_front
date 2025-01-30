@@ -4,6 +4,7 @@ const useFormValidation = () => {
   const [errors, setErrors] = useState<string[]>([]);
 
   const validateStep1 = (
+    levelId: string,
     clientId: string,
     campaignId: string,
     managementId: string,
@@ -11,6 +12,7 @@ const useFormValidation = () => {
     title: string,
   ): boolean => {
     const errorMessages: string[] = [];
+    if (!levelId) errorMessages.push('El nivel es obligatorio.');
     if (!clientId) errorMessages.push('El cliente es obligatorio.');
     if (!campaignId) errorMessages.push('La campaña es obligatoria.');
     if (!managementId) errorMessages.push('El tipo de gestión es obligatorio.');

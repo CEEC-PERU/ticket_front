@@ -9,11 +9,13 @@ import Alert from '../../../components/solicitante/Form/Alert';
 import FileInput from '../../../components/solicitante/Form/FileInput';
 import useFormValidation from '../../../hooks/form/useFormValidation';
 import { submitSolicitud } from '../../../services/ticket/submitTicket';
+import { useLevel } from '../../../hooks/state/useLevel';
 import './../../../app/globals.css';
 import { useAuth } from '../../../context/AuthContext';
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
+  const [selectedLevelId, setSelectedLevelId] = useState<number | null>(null);
   const [selectedManagementId, setSelectedManagementId] = useState<number | null>(null);
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   const [step, setStep] = useState(1);
@@ -22,10 +24,12 @@ export default function Solicitud() {
   const { typeManagement } = useTypeManagement();
   const { campaigns } = useCampaings(selectedClientId as number);
   const { detailManagement } = useDetailManagement(selectedManagementId as number);
+  const { levels } = useLevel();
   const { user, token } = useAuth();
   const userInfor = user as { id: number } | null;
   const [numberTicket, setNumberTicket] = useState<string | null>(null); // Guarda el número del ticket generado
  const [formData, setFormData] = useState({
+  levelId: '',
     clientId: '',
     campaignId: '',
     managementId: '',
@@ -42,6 +46,12 @@ export default function Solicitud() {
     const clientId = parseInt(event.target.value, 10);
     setSelectedClientId(clientId);
     setFormData((prevData) => ({ ...prevData, clientId: event.target.value }));
+  };
+
+  const handleLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const levelId = parseInt(event.target.value, 10);
+    setSelectedLevelId(levelId);
+    setFormData((prevData) => ({ ...prevData, levelId: event.target.value }));
   };
 
   const handleManagementChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -85,6 +95,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 
   const form = new FormData();
+  form.append("levelId", formData.levelId);
   form.append("clientId", formData.clientId);
   form.append("campaignId", formData.campaignId);
   form.append("managementId", formData.managementId);
@@ -122,6 +133,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   const handleNextStep = () => {
     if (step === 1) {
       const isValid = validateStep1(
+        formData.levelId,
         formData.clientId,
         formData.campaignId,
         formData.managementId,
@@ -142,6 +154,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 const handleNewRequest = () => {
     setFormData({
+      levelId: '',
       clientId: '',
       campaignId: '',
       managementId: '',
@@ -193,11 +206,28 @@ return (
                 <div className="mb-4">
                   <label htmlFor="cliente" className="block text-lg font-semibold mb-2">Titulo</label>
                   <input
-                    id="cliente"
+                    id="title"
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#682cd8] transition"
                     value={formData.title}
                     onChange={handleTitleChange}
                    ></input>
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="management" className="block text-lg font-semibold mb-2">Nivel</label>
+                  <select
+                    id="management"
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#682cd8] transition"
+                    value={formData.levelId}
+                    onChange={handleLevelChange}
+                  >
+                    <option value="">Seleccione Nivel de urgencia</option>
+                    {levels.map((level) => (
+                      <option key={level.level_id} value={level.level_id}>
+                        {level.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="mb-4">

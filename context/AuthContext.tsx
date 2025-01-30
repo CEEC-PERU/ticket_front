@@ -30,6 +30,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [profileInfo, setProfileInfo] = useState<Profile | UserInfo | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('userToken');
+    const storedUser = localStorage.getItem('userInfo');
+  
+    if (storedToken && storedUser) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+      const decodedUser = JSON.parse(storedUser);
+      
+      setToken(storedToken);
+      setUser(decodedUser);
+  
+ 
+    }
+  }, []);
+
+  
 // AuthContext.tsx
 const refreshProfile = async (token: string, userId: number) => {
   try {

@@ -10,11 +10,12 @@ export const useTypeClients = () => {
   const { user, token } = useAuth();
   useEffect(() => {
     const fetchTypeClients = async () => {
-      setLoading(true);
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       try {
-        if (!token) {
-          return;
-        }
+        setLoading(true);
         const data = await getTypeClients(token);
         setTypeClients(data);
       } catch (err) {

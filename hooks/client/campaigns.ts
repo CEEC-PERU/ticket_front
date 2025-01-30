@@ -3,6 +3,7 @@ import { Camapign } from '../../interfaces/client/campaigns';
 import { getCampaigns } from '../../services/client/campaigns';
 import { useAuth } from '../../context/AuthContext';
 
+
 export const useCampaings = (client_id: number | null) => {
   const [campaigns, setCampaigns] = useState<Camapign[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -10,9 +11,13 @@ export const useCampaings = (client_id: number | null) => {
   const { user, token } = useAuth();
 
   useEffect(() => {
-    if (!client_id || !token) return;  // Validación para evitar ejecución si no hay cliente o token
-
+  
     const fetchCampaigns = async () => {
+
+      if (!client_id || !token) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
         const data = await getCampaigns(token, client_id);
