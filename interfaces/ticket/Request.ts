@@ -8,4 +8,8 @@ export interface Request {
     updated_at: string;
 }
    
- 
+export interface UpdateRequest {
+    is_aproved?: boolean;
+    attention_time?: string;
+  }
+  

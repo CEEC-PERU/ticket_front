@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { AdminManagement } from '../../interfaces/management/AdminManagement';
 import { getAdminManagement } from '../../services/management/adminManagement';
@@ -7,34 +8,45 @@ export const useAdminManagement = () => {
   const [adminManagement, setAdminManagement] = useState<AdminManagement[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
-  useEffect(() => {
-    const fetchAdminManagement = async () => {
+  // Fetch the data from the API
+  const fetchAdminManagement = async () => {
+    if (!token || !user) {
+      setLoading(false);
+      return;
+    }
+
+    let userData;
+    try {
+      userData = typeof user === 'string' ? JSON.parse(user) : user;
+    } catch (error) {
+      console.error('Error parsing user:', error);
+      return;
+    }
+
+    if (!userData?.id) {
+      setLoading(false);
+      return;
+    }
+
+    try {
       setLoading(true);
-      try {
-        //Actualizar usuarios
-        // Obtén user_id desde localStorage
-        const userInfo = localStorage.getItem('userInfo');
-        const parsedUserInfo = userInfo ? JSON.parse(userInfo) : null;
-        const user_id = parsedUserInfo?.id;
-        if (!user_id || !token) {
-          setError('User ID o token no disponible');
-          return;
-        }
-        // Llama al servicio con token y user_id
-        const data = await getAdminManagement(token, user_id);
-        setAdminManagement(data);
-        console.log(data);
-      } catch (err) {
-        setError('Error al obtener la gestión de administradores');
-      } finally {
-        setLoading(false);
-      }
-    };
+      const data = await getAdminManagement(token, userData.id);
+      setAdminManagement(data);
+      console.log(data);
+    } catch (err) {
+      setError('Error al obtener la gestión de administradores');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Use `useEffect` to fetch data on component mount
+  useEffect(() => {
     fetchAdminManagement();
-  }, [token]); // Solo depende de `token` ya que `user_id` proviene de `localStorage`
+  }, [token]); // Depend on `token` to refetch when the token changes
 
-  return { adminManagement, loading, error };
+  // Return the fetch function to allow manual refetching
+  return { adminManagement, loading, error, refetch: fetchAdminManagement };
 };

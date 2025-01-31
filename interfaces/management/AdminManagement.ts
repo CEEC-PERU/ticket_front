@@ -33,6 +33,14 @@ export interface Profile {
     fileDetails: FileDetails[];
   }
   
+  export interface AdminUser {
+    email: string;
+    profile :Profile;
+  }
+  export interface AdminTicket {
+    user_id : number;
+    adminUser : AdminUser;
+  }
   export interface AdminManagement {
     request_id: number;
     title: string;
@@ -46,6 +54,7 @@ export interface Profile {
     number_ticket: number;
     created_at: string;
     updated_at: string;
+    is_aproved: boolean;
     user: User;
     state: State;
     TypeClient: TypeClient;
@@ -53,5 +62,6 @@ export interface Profile {
     TypeManagement: TypeManagement;
     detailManagement: { name: string }; // Added to match `detailManagement`
     Detail_Requests: DetailRequests[];
+    adminTickets : AdminTicket[];
   }
   

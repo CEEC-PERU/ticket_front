@@ -4,11 +4,77 @@ import DrawerSolicitante from '../../../components/administrador/DrawerAdministr
 import './../../../app/globals.css';
 import Image from 'next/image';
 import { useAdminManagement } from '../../../hooks/management/useAdminManagement';
+import { useUpdateRequest } from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
+
 import { motion } from 'framer-motion';
+
+// Modal components
+import Modal from '../../../components/Modal';
 
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
-  const { adminManagement, loading, error } = useAdminManagement();
+  const { adminManagement, loading, error , refetch} = useAdminManagement();
+
+ // States for modals
+ const [showRechazoModal, setShowRechazoModal] = useState(false);
+ const [showTimeModal, setShowTimeModal] = useState(false);
+ const [rejectionReason, setRejectionReason] = useState('');
+ const [attentionTime, setAttentionTime] = useState('');
+const [timeUnit, setTimeUnit] = useState("hours");
+const { handleUpdateRequest } = useUpdateRequest(); // Usa el hook aquí.
+const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
+const [newState, setNewState] = useState<string | null>(null); // State for selecting new state
+
+const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setNewState(e.target.value);
+};
+
+
+  // Update the handler type to match the textarea's event
+const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  setRejectionReason(event.target.value);
+};
+
+
+  // Handle Attention Time change
+  const handleAttentionTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAttentionTime(event.target.value);
+  };
+
+
+
+
+  // Handle "Guardar Tiempo" action
+  const handleSaveTime = async () => {
+    if (selectedRequestId !== null) {
+      const formattedAttentionTime = `${attentionTime} ${timeUnit === 'hours' ? 'horas' : 'días'}`;
+      const updatePayload = {
+        is_aproved: true,
+        attention_time: formattedAttentionTime,
+      };
+
+      console.log(updatePayload);
+      // Llamamos al hook para actualizar la solicitud
+      await handleUpdateRequest(selectedRequestId, updatePayload);
+
+      // Refetch the data to update the status
+      refetch();
+
+      // Cerrar el modal después de la actualización
+      setShowTimeModal(false);
+    }
+  };
+
+
+  const handleUpdateState = async (requestId: number, newState: string) => {
+    if (newState) {
+      const updatePayload = {
+        state_id: newState === 'En proceso' ? 4 : 2, // Estado 2: En proceso, Estado 4: Cerrado
+      };
+     // await handleUpdateRequest(requestId, updatePayload);
+     // refetch(); // Refresca los datos después de actualizar
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
@@ -70,6 +136,22 @@ export default function Solicitud() {
                       <strong>Número de Ticket:</strong> {request.number_ticket}
                     </p>
 
+
+
+
+
+                    {request.adminTickets.length > 0 ? (
+  <p className="text-sm text-gray-600">
+    <strong>Responsable:</strong> {request.adminTickets[0].adminUser.profile.name} {request.adminTickets[0].adminUser.profile.lastname}
+  </p>
+) : (
+  <p className="text-sm text-gray-600 ">
+    <strong>Responsable:</strong> No hay responsable asignado
+  </p>
+)}
+
+
+
                     {/* Detalles y Archivos */}
                     <div className="mt-4">
                       {request.Detail_Requests.map((detail, index) => (
@@ -95,13 +177,119 @@ export default function Solicitud() {
                         </div>
                       ))}
                     </div>
+
+                    {/* Mostrar el selector solo si el estado es "PENDIENTE" */}
+{request.state.name.trim() === 'PENDIENTE' && (
+                      <div className="mt-4 ">
+                        <p className="text-sm text-gray-600">
+                          <strong>Seleccione nuevo estado:</strong>
+                        </p>
+                        <select
+                          className="p-2 border border-gray-300 rounded-md"
+                          value={newState || ''}
+                          onChange={handleStateChange}
+                        >
+                          <option value="">Seleccionar...</option>
+                          <option value="En proceso">En proceso</option>
+                          <option value="Cerrado">Cerrado</option>
+                        </select>
+                        <button
+                          onClick={() => {
+                            handleUpdateState(request.request_id, newState || '');
+                          }}
+                          className="bg-blue-500 ml-4  text-white p-2 rounded-md mt-2"
+                          disabled={!newState}
+                        >
+                          Actualizar Estado
+                        </button>
+                      </div>
+                    )}
+                 
                   </div>
+
+                    
+
+
+                   {/* Action buttons at the bottom */}
+                   {!request.is_aproved && (
+                    <div className="flex justify-between p-4 border-t border-gray-200">
+                      <button onClick={() => setShowRechazoModal(true)} className="bg-red-500 text-white p-2 rounded-full">X</button>
+                      <button
+                        onClick={() => {
+                          setSelectedRequestId(request.request_id);
+                          setShowTimeModal(true);
+                        }}
+                        className="bg-green-500 text-white p-2 rounded-full"
+                      >
+                        ✔
+                      </button>
+                    </div>
+                  )}
+                
                 </motion.div>
               ))}
             </div>
           )}
         </div>
       </div>
+
+
+      {/* Rechazo Modal */}
+      {showRechazoModal && (
+        <Modal title="Detalle de Rechazo" onClose={() => setShowRechazoModal(false)}>
+          <div className="space-y-4">
+            <textarea
+              className="w-full p-3 border border-gray-300 rounded-md"
+              placeholder="Escriba el motivo del rechazo..."
+              value={rejectionReason}
+              onChange={handleRejectionChange}
+            />
+            <button
+              onClick={() => {
+                console.log("Rechazo: ", rejectionReason);
+                setShowRechazoModal(false);
+              }}
+              className="bg-red-500 text-white p-2 rounded-md"
+            >
+              Enviar Rechazo
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {/* Time Modal */}
+      {showTimeModal && (
+  <Modal title="Ingresar Tiempo de Atención" onClose={() => setShowTimeModal(false)}>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          className="w-full p-3 border border-gray-300 rounded-md"
+          placeholder="Ingrese el tiempo"
+          value={attentionTime}
+          onChange={handleAttentionTimeChange}
+        />
+        <select
+          className="p-3 border border-gray-300 rounded-md"
+          value={timeUnit}
+          onChange={(e) => setTimeUnit(e.target.value)}
+        >
+          <option value="hours">Horas</option>
+          <option value="days">Días</option>
+        </select>
+      </div>
+      
+
+      <button
+                 onClick={handleSaveTime} // Pasamos el request_id aquí
+              className="bg-green-500 text-white p-2 rounded-md"
+            >
+              Guardar Tiempo
+            </button>
+    </div>
+  </Modal>
+)}
+
     </div>
   );
 }
