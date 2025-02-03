@@ -4,7 +4,7 @@ import DrawerSolicitante from '../../../components/administrador/DrawerAdministr
 import './../../../app/globals.css';
 import Image from 'next/image';
 import { useAdminManagement } from '../../../hooks/management/useAdminManagement';
-import { useUpdateRequest } from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
+import { useUpdateRequest  , useUpdateStateRequest} from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
 import { submitRejection } from '../../../services/ticket/rejectionTicket';
 import { useAuth } from '../../../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -24,9 +24,11 @@ export default function Solicitud() {
  const [attentionTime, setAttentionTime] = useState('');
 const [timeUnit, setTimeUnit] = useState("hours");
 const { handleUpdateRequest } = useUpdateRequest(); // Usa el hook aquí.
+const { handleUpdateStateRequest } = useUpdateStateRequest();
 const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
 const [newState, setNewState] = useState<string | null>(null); // State for selecting new state
 const userInfor = user as { id: number } | null;
+
 
 
 const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -54,8 +56,6 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
         reason: rejectionReason,
       };
 
-     
-      
       await submitRejection( rejection);
       refetch(); // Actualizar la lista después del rechazo
       setShowRechazoModal(false);
@@ -88,16 +88,37 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
   };
 
 
+
   const handleUpdateState = async (requestId: number, newState: string) => {
     if (newState) {
       const updatePayload = {
-        state_id: newState === 'En proceso' ? 4 : 2, // Estado 2: En proceso, Estado 4: Cerrado
+        state_id: newState === 'En proceso' ? 4 : 4, // Estado 4: En proceso, Estado 2: Cerrado
       };
-     // await handleUpdateRequest(requestId, updatePayload);
-     // refetch(); // Refresca los datos después de actualizar
+  
+      try {
+        await handleUpdateStateRequest(requestId, updatePayload);
+        refetch(); // Refresca los datos después de actualizar
+      } catch (error) {
+        console.error("Error al actualizar el estado:", error);
+      }
     }
   };
 
+  const handleUpdateState2 = async (requestId: number, newState: string) => {
+    if (newState) {
+      const updatePayload = {
+        state_id: newState === 'En proceso' ? 2 : 2, // Estado 4: En proceso, Estado 2: Cerrado
+      };
+  
+      try {
+        await handleUpdateStateRequest(requestId, updatePayload);
+        refetch(); // Refresca los datos después de actualizar
+      } catch (error) {
+        console.error("Error al actualizar el estado:", error);
+      }
+    }
+  };
+  
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
       {/* Drawer */}
@@ -210,35 +231,55 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                     </div>
 
                     {/* Mostrar el selector solo si el estado es "PENDIENTE" */}
+
 {request.state.name.trim() === 'PENDIENTE' && (
-                      <div className="mt-4 ">
-                        <p className="text-sm text-gray-600">
-                          <strong>Seleccione nuevo estado:</strong>
-                        </p>
-                        <select
-                          className="p-2 border border-gray-300 rounded-md"
-                          value={newState || ''}
-                          onChange={handleStateChange}
-                        >
-                          <option value="">Seleccionar...</option>
-                          <option value="En proceso">En proceso</option>
-                          <option value="Cerrado">Cerrado</option>
-                        </select>
-                        <button
-                          onClick={() => {
-                            handleUpdateState(request.request_id, newState || '');
-                          }}
-                          className="bg-blue-500 ml-4  text-white p-2 rounded-md mt-2"
-                          disabled={!newState}
-                        >
-                          Actualizar Estado
-                        </button>
-                      </div>
-                    )}
+  <div className="mt-4">
+    <p className="text-sm text-gray-600">
+      <strong>Seleccione nuevo estado:</strong>
+    </p>
+    <select
+      className="p-2 border border-gray-300 rounded-md"
+      value={newState || ''}
+      onChange={handleStateChange}
+    >
+      <option value="">Seleccionar...</option>
+      <option value="En proceso">En proceso</option>
+    </select>
+    <button
+      onClick={() => handleUpdateState(request.request_id, newState || '')}
+      className="bg-blue-500 ml-4 text-white p-2 rounded-md mt-2"
+      disabled={!newState}
+    >
+      Actualizar Estado
+    </button>
+  </div>
+)}
+
+{request.state.name.trim() === 'EN PROCESO' && (
+  <div className="mt-4">
+    <p className="text-sm text-gray-600">
+      <strong>Seleccione nuevo estado:</strong>
+    </p>
+    <select
+      className="p-2 border border-gray-300 rounded-md"
+      value={newState || ''}
+      onChange={handleStateChange}
+    >
+      <option value="">Seleccionar...</option>
+      <option value="En proceso">Finalizado</option>
+    </select>
+    <button
+      onClick={() => handleUpdateState2(request.request_id, newState || '')}
+      className="bg-blue-500 ml-4 text-white p-2 rounded-md mt-2"
+      disabled={!newState}
+    >
+      Actualizar Estado
+    </button>
+  </div>
+)}
+
                  
                   </div>
-
-                    
 
 
                    {/* Action buttons at the bottom */}
