@@ -5,16 +5,18 @@ import './../../../app/globals.css';
 import Image from 'next/image';
 import { useAdminManagement } from '../../../hooks/management/useAdminManagement';
 import { useUpdateRequest } from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
-
+import { submitRejection } from '../../../services/ticket/rejectionTicket';
+import { useAuth } from '../../../context/AuthContext';
 import { motion } from 'framer-motion';
 
 // Modal components
 import Modal from '../../../components/Modal';
+import { userInfo } from 'os';
 
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
   const { adminManagement, loading, error , refetch} = useAdminManagement();
-
+  const { token , user } = useAuth();
  // States for modals
  const [showRechazoModal, setShowRechazoModal] = useState(false);
  const [showTimeModal, setShowTimeModal] = useState(false);
@@ -24,6 +26,8 @@ const [timeUnit, setTimeUnit] = useState("hours");
 const { handleUpdateRequest } = useUpdateRequest(); // Usa el hook aquí.
 const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
 const [newState, setNewState] = useState<string | null>(null); // State for selecting new state
+const userInfor = user as { id: number } | null;
+
 
 const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setNewState(e.target.value);
@@ -41,7 +45,25 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     setAttentionTime(event.target.value);
   };
 
+  const handleRejection = async () => {
+    if (!selectedRequestId) return;
+    try {
+      const rejection = {
+        request_id:  selectedRequestId,
+        user_id : userInfor?.id || 0,
+        reason: rejectionReason,
+      };
 
+     
+      
+      await submitRejection( rejection);
+      refetch(); // Actualizar la lista después del rechazo
+      setShowRechazoModal(false);
+    } catch (error) {
+      console.error("Error al enviar el rechazo:", error);
+    }
+  };
+  
 
 
   // Handle "Guardar Tiempo" action
@@ -135,6 +157,15 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                     <p className="text-sm text-gray-600">
                       <strong>Número de Ticket:</strong> {request.number_ticket}
                     </p>
+                    <p className="text-sm text-gray-600">
+  <strong>Estado de Aprobación:</strong>{" "}
+  {request?.is_aproved === null
+    ? "Por aprobar"
+    : request?.is_aproved
+    ? "Aprobado"
+    : "Rechazado"}
+</p>
+
 
 
 
@@ -213,7 +244,10 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                    {/* Action buttons at the bottom */}
                    {!request.is_aproved && (
                     <div className="flex justify-between p-4 border-t border-gray-200">
-                      <button onClick={() => setShowRechazoModal(true)} className="bg-red-500 text-white p-2 rounded-full">X</button>
+                      <button onClick={() => {
+                         setSelectedRequestId(request.request_id);
+                         setShowRechazoModal(true)}}
+                          className="bg-red-500 text-white p-2 rounded-full">X</button>
                       <button
                         onClick={() => {
                           setSelectedRequestId(request.request_id);
@@ -244,15 +278,13 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
               value={rejectionReason}
               onChange={handleRejectionChange}
             />
-            <button
-              onClick={() => {
-                console.log("Rechazo: ", rejectionReason);
-                setShowRechazoModal(false);
-              }}
-              className="bg-red-500 text-white p-2 rounded-md"
-            >
-              Enviar Rechazo
-            </button>
+           <button
+  onClick={handleRejection}
+  className="bg-red-500 text-white p-2 rounded-md"
+>
+  Enviar Rechazo
+</button>
+
           </div>
         </Modal>
       )}

@@ -29,3 +29,6 @@ export const API_TICKET = `${baseURL}/api/ticket`;
 
 //niveles -importancia ticket
 export const API_LEVELS = `${baseURL}/api/levels`;
+
+//niveles -importancia ticket
+export const API_REJECTION = `${baseURL}/api/rejection`;
