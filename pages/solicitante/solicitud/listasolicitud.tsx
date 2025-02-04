@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Navbar from '../../../components/solicitante/Navbar';
-import DrawerSolicitante from '../../../components/administrador/DrawerAdministrador';
+import DrawerSolicitante from '../../../components/solicitante/DrawerSolicitante';
 import './../../../app/globals.css';
 import Image from 'next/image';
 import { RequestClient} from '../../../interfaces/ticket/Request';
 import { useRequestClient } from '../../../hooks/ticket/clienteTicket';
-import { useUpdateRequest  , useUpdateStateRequest} from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
+import {useUpdateRequest} from '../../../hooks/ticket/detailRequest'; // Asegúrate de importar el hook correctamente.
 import { submitRejection } from '../../../services/ticket/rejectionTicket';
 import { useAuth } from '../../../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -24,7 +24,7 @@ export default function ListaSolicitud() {
   const [newDetail, setNewDetail] = useState<string>(''); // New detail input for editing
   const [newFiles, setNewFiles] = useState<File[]>([]); // Files to upload
 
-const { handleUpdateStateRequest } = useUpdateStateRequest();
+const { updateDetailRequest  } = useUpdateRequest();
 const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
 
 const userInfor = user as { id: number } | null;
@@ -49,17 +49,16 @@ const handleEditClick = (request: RequestClient) => {
     }
   };
 
-  const handleSaveChanges = () => {
+ 
+  const handleSaveChanges = async () => {
     if (selectedRequest) {
-      // You can now call your API to update the request
-      // Example: use the `handleUpdateStateRequest` hook or other API call
-      console.log('Updating Request with new details and files', newDetail, newFiles);
-      
-      setShowModal(false); // Close the modal after saving
-      // You might want to refetch the data here as well
+      const result = await updateDetailRequest(selectedRequest.request_id, newDetail, newFiles);
+      if (result) {
+        setShowModal(false); // Cerrar el modal si la actualización fue exitosa
+        // Aquí puedes agregar lógica para refetch o actualizar el estado de la solicitud
+      }
     }
   };
-
   
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
