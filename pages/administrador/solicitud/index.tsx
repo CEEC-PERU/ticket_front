@@ -29,7 +29,9 @@ const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
 const [newState, setNewState] = useState<string | null>(null); // State for selecting new state
 const userInfor = user as { id: number } | null;
 
-
+const [isUpdatingState, setIsUpdatingState] = useState(false);
+const [isRejecting, setIsRejecting] = useState(false);
+const [isSavingTime, setIsSavingTime] = useState(false);
 
 const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setNewState(e.target.value);
@@ -50,6 +52,7 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
   const handleRejection = async () => {
     if (!selectedRequestId) return;
     try {
+      setIsRejecting(true);
       const rejection = {
         request_id:  selectedRequestId,
         user_id : userInfor?.id || 0,
@@ -75,15 +78,16 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
         attention_time: formattedAttentionTime,
       };
 
-      console.log(updatePayload);
-      // Llamamos al hook para actualizar la solicitud
-      await handleUpdateRequest(selectedRequestId, updatePayload);
-
-      // Refetch the data to update the status
-      refetch();
-
-      // Cerrar el modal después de la actualización
-      setShowTimeModal(false);
+      try {
+        setIsSavingTime(true); // Set loading to true
+        await handleUpdateRequest(selectedRequestId, updatePayload);
+        refetch();
+        setShowTimeModal(false);
+      } catch (error) {
+        console.error("Error al guardar el tiempo:", error);
+      } finally {
+        setIsSavingTime(false); // Set loading to false
+      }
     }
   };
 
@@ -95,26 +99,35 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
         state_id: newState === 'En proceso' ? 4 : 4, // Estado 4: En proceso, Estado 2: Cerrado
       };
   
+     
       try {
+        setIsUpdatingState(true); // Set loading to true
         await handleUpdateStateRequest(requestId, updatePayload);
-        refetch(); // Refresca los datos después de actualizar
+        refetch();
       } catch (error) {
         console.error("Error al actualizar el estado:", error);
+      } finally {
+        setIsUpdatingState(false); // Set loading to false
       }
+    
     }
   };
+
 
   const handleUpdateState2 = async (requestId: number, newState: string) => {
     if (newState) {
       const updatePayload = {
-        state_id: newState === 'En proceso' ? 2 : 2, // Estado 4: En proceso, Estado 2: Cerrado
+        state_id: newState === 'En proceso' ? 2 : 2,
       };
-  
+
       try {
+        setIsUpdatingState(true); // Set loading to true
         await handleUpdateStateRequest(requestId, updatePayload);
-        refetch(); // Refresca los datos después de actualizar
+        refetch();
       } catch (error) {
         console.error("Error al actualizar el estado:", error);
+      } finally {
+        setIsUpdatingState(false); // Set loading to false
       }
     }
   };
@@ -246,12 +259,12 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
       <option value="En proceso">En proceso</option>
     </select>
     <button
-      onClick={() => handleUpdateState(request.request_id, newState || '')}
-      className="bg-blue-500 ml-4 text-white p-2 rounded-md mt-2"
-      disabled={!newState}
-    >
-      Actualizar Estado
-    </button>
+                          onClick={() => handleUpdateState(request.request_id, newState || '')}
+                          className="bg-blue-500 ml-4 text-white p-2 rounded-md mt-2"
+                          disabled={isUpdatingState || !newState}
+                        >
+                          {isUpdatingState ? 'Cargando...' : 'Actualizar Estado'}
+                        </button>
   </div>
 )}
 
@@ -269,17 +282,15 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
       <option value="En proceso">Finalizado</option>
     </select>
     <button
-      onClick={() => handleUpdateState2(request.request_id, newState || '')}
-      className="bg-blue-500 ml-4 text-white p-2 rounded-md mt-2"
-      disabled={!newState}
-    >
-      Actualizar Estado
-    </button>
+                          onClick={() => handleUpdateState2(request.request_id, newState || '')}
+                          className="bg-blue-500 ml-4 text-white p-2 rounded-md mt-2"
+                          disabled={isUpdatingState || !newState}
+                        >
+                          {isUpdatingState ? 'Cargando...' : 'Actualizar Estado'}
+                        </button>
   </div>
 )}
-
-                 
-                  </div>
+</div>
 
 
                    {/* Action buttons at the bottom */}
@@ -320,11 +331,12 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
               onChange={handleRejectionChange}
             />
            <button
-  onClick={handleRejection}
-  className="bg-red-500 text-white p-2 rounded-md"
->
-  Enviar Rechazo
-</button>
+              onClick={handleRejection}
+              className="bg-red-500 text-white p-2 rounded-md"
+              disabled={isRejecting}
+            >
+              {isRejecting ? 'Enviando...' : 'Enviar Rechazo'}
+            </button>
 
           </div>
         </Modal>
@@ -354,10 +366,11 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
       
 
       <button
-                 onClick={handleSaveTime} // Pasamos el request_id aquí
+              onClick={handleSaveTime}
               className="bg-green-500 text-white p-2 rounded-md"
+              disabled={isSavingTime}
             >
-              Guardar Tiempo
+              {isSavingTime ? 'Guardando...' : 'Guardar Tiempo'}
             </button>
     </div>
   </Modal>

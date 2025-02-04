@@ -10,6 +10,7 @@ import { submitRejection } from '../../../services/ticket/rejectionTicket';
 import { useAuth } from '../../../context/AuthContext';
 import { motion } from 'framer-motion';
 import {PencilSquareIcon} from '@heroicons/react/24/solid';
+import FileInput from '../../../components/solicitante/Form/FileInput';
 // Modal components
 import Modal from '../../../components/Modal';
 import { userInfo } from 'os';
@@ -23,42 +24,54 @@ export default function ListaSolicitud() {
   const [selectedRequest, setSelectedRequest] = useState<RequestClient | null>(null);
   const [newDetail, setNewDetail] = useState<string>(''); // New detail input for editing
   const [newFiles, setNewFiles] = useState<File[]>([]); // Files to upload
-
+  const [isLoading, setIsLoading] = useState(false); // Track loading state for the button
 const { updateDetailRequest  } = useUpdateRequest();
 const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
 
 const userInfor = user as { id: number } | null;
 
+ const [formData, setFormData] = useState({
+
+    attachedDocuments: [] as File[],
+  });
 
 
 
-const handleEditClick = (request: RequestClient) => {
+  const handleEditClick = (request: RequestClient) => {
     setSelectedRequest(request);
     setShowModal(true);
     setNewDetail(request.Detail_Requests[0]?.detail_name || ''); // Pre-populate with existing detail
   };
+  
 
   const handleModalClose = () => {
     setShowModal(false);
     setSelectedRequest(null);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setNewFiles([...newFiles, ...Array.from(e.target.files)]);
-    }
+  const handleFileChange = (files: File[]) => {
+    setNewFiles(files);
   };
+  
 
+  
  
+
   const handleSaveChanges = async () => {
     if (selectedRequest) {
+      console.log("Selected Request:", selectedRequest);
+      console.log("New Detail:", newDetail);
+      console.log("New Files:", newFiles);
+      setIsLoading(true); 
       const result = await updateDetailRequest(selectedRequest.request_id, newDetail, newFiles);
       if (result) {
-        setShowModal(false); // Cerrar el modal si la actualización fue exitosa
-        // Aquí puedes agregar lógica para refetch o actualizar el estado de la solicitud
+        setShowModal(false); // Close modal on successful update
+        // Refetch or update the UI with the latest data if needed
+        refetch();
       }
     }
   };
+  
   
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
@@ -130,10 +143,6 @@ const handleEditClick = (request: RequestClient) => {
 </p>
 
 
-
-
-
-
                     {request.adminTickets.length > 0 ? (
   <p className="text-sm text-gray-600">
     <strong>Responsable:</strong> {request.adminTickets[0].adminUser.profile.name} {request.adminTickets[0].adminUser.profile.lastname}
@@ -143,10 +152,6 @@ const handleEditClick = (request: RequestClient) => {
     <strong>Responsable:</strong> No hay responsable asignado
   </p>
 )}
-
-
-                    
-
 
                     {/* Detalles y Archivos */}
                     <div className="mt-4">
@@ -197,10 +202,6 @@ const handleEditClick = (request: RequestClient) => {
 
                  
                   </div>
-
-
-                   
-                
                 </motion.div>
               ))}
             </div>
@@ -222,12 +223,8 @@ const handleEditClick = (request: RequestClient) => {
           </div>
           <div className="mt-4">
             <label className="block text-sm">Adjuntar más archivos </label>
-            <input
-              type="file"
-              multiple
-              onChange={handleFileChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
+            <FileInput onChange={handleFileChange} />
+
             <div className="mt-2">
               {newFiles.length > 0 && (
                 <ul>
@@ -241,11 +238,13 @@ const handleEditClick = (request: RequestClient) => {
             </div>
           </div>
           <div className="mt-6 text-right">
+          
             <button
-              className="bg-blue-500 text-white p-2 rounded-md"
+              className={`bg-blue-500 text-white p-2 rounded-md ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={handleSaveChanges}
+              disabled={isLoading}
             >
-              Guardar cambios
+              {isLoading ? 'Enviando...' : 'Guardar cambios'}
             </button>
           </div>
         </Modal>

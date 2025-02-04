@@ -48,7 +48,7 @@ const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
           className="p-3 border rounded-lg text-black pt-5"
           onChange={handleFileChange}
         />
-           <span className="text-gray-500 ">Tipo de documento adminitido .jpg .png .pdf </span>
+         
       </div>
    
     </div>
