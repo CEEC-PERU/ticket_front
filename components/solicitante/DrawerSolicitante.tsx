@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { HomeIcon , ArrowRightStartOnRectangleIcon  } from '@heroicons/react/24/solid';
+import { HomeIcon , ArrowRightStartOnRectangleIcon  , NumberedListIcon , PlusCircleIcon} from '@heroicons/react/24/solid';
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarAdminProps {
@@ -49,7 +49,7 @@ const DrawerSolicitante: React.FC<SidebarAdminProps> = ({ showSidebar, setShowSi
               onClick={() => handleNavigation('/solicitante/solicitud')}
               className="flex items-center p-4 text-white hover:bg-[#7959ef] w-full text-left"
             >
-              <HomeIcon className="h-6 w-6"  />
+              <PlusCircleIcon className="h-6 w-6"  />
               {showSidebar && <span className="ml-2 text-white">Registrar Solicitud</span>}
             </button>
           </li>
@@ -58,7 +58,7 @@ const DrawerSolicitante: React.FC<SidebarAdminProps> = ({ showSidebar, setShowSi
               onClick={() => handleNavigation('/solicitante/solicitud/listasolicitud')}
               className="flex items-center p-4 text-white hover:bg-[#7959ef] w-full text-left"
             >
-              <HomeIcon className="h-6 w-6"  />
+              <NumberedListIcon className="h-6 w-6"  />
               {showSidebar && <span className="ml-2 text-white">Lista de Solicitud</span>}
             </button>
           </li>

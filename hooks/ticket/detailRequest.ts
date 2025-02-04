@@ -1,6 +1,7 @@
 // hooks/ticket/updateTicket.ts
 import { useState } from 'react';
 import axios from 'axios';
+import { DETAIL_REQUEST } from "../../utils/Endpoints";
 
 export const useUpdateRequest = () => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ files.forEach((file) => {
 
 console.log(formData);
 // Llamada al backend
-const response = await axios.put(`http://localhost:4100/api/detailrequest/update-detail/${requestId}`, formData, {
+const response = await axios.put(`${DETAIL_REQUEST}/update-detail/${requestId}`, formData, {
   headers: {
     'Content-Type': 'multipart/form-data',
   },

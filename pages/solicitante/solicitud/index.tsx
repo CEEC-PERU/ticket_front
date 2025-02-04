@@ -12,6 +12,8 @@ import { submitSolicitud } from '../../../services/ticket/submitTicket';
 import { useLevel } from '../../../hooks/state/useLevel';
 import './../../../app/globals.css';
 import { useAuth } from '../../../context/AuthContext';
+import { useRouter } from 'next/router';
+
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
@@ -28,6 +30,8 @@ export default function Solicitud() {
   const { user, token } = useAuth();
   const userInfor = user as { id: number } | null;
   const [numberTicket, setNumberTicket] = useState<string | null>(null); // Guarda el número del ticket generado
+    const router = useRouter(); // Inicializar el hook de navegación
+  
  const [formData, setFormData] = useState({
   levelId: '',
     clientId: '',
@@ -41,6 +45,10 @@ export default function Solicitud() {
   });
 
   const { errors, validateStep1, validateStep2 } = useFormValidation();
+
+  const handleNavigation = () => {
+    router.push('/solicitante/solicitud/listasolicitud'); // Aquí debes colocar la ruta a la que deseas navegar.
+  };
 
   const handleClientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = parseInt(event.target.value, 10);
@@ -94,6 +102,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     return;
   }
 
+  const handleNavigation = () => {
+    router.push('/solicitante/solicitud/listasolicitud'); // Aquí debes colocar la ruta a la que deseas navegar.
+  };
   const form = new FormData();
   form.append("levelId", formData.levelId);
   form.append("clientId", formData.clientId);
@@ -369,7 +380,7 @@ return (
                 </button>
                 <button
                   className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition"
-                  onClick={() => setStep(1)}
+                    onClick={handleNavigation} 
                 >
                   Ver Solicitudes
                 </button>

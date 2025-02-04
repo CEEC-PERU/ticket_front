@@ -4,10 +4,15 @@ import DrawerSolicitante from '../../components/administrador/DrawerAdministrado
 import './../../app/globals.css';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 export default function Administrador() {
   const [showSidebar, setShowSidebar] = useState(false);
-
+    const router = useRouter(); // Inicializar el hook de navegación
+  
+  const handleNavigation = () => {
+    router.push('/administrador/solicitud'); // Aquí debes colocar la ruta a la que deseas navegar.
+  }; 
   return (
     <div className="flex h-screen bg-white text-black">
       {/* Drawer */}
@@ -86,6 +91,7 @@ export default function Administrador() {
                   duration: 2,
                 },
               }}
+              onClick={handleNavigation} 
             >
               Ver Solicitudes
             </motion.button>
