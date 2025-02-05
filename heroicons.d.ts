@@ -28,5 +28,6 @@ declare module '@heroicons/react/24/solid' {
     export const NumberedListIcon : ComponentType<SVGProps<SVGSVGElement>>;
     export const PlusCircleIcon : ComponentType<SVGProps<SVGSVGElement>>;
     export const BellAlertIcon : ComponentType<SVGProps<SVGSVGElement>>;
+    export const UserPlusIcon : ComponentType<SVGProps<SVGSVGElement>>;
   }
   

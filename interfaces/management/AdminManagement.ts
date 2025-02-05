@@ -41,10 +41,19 @@ export interface Profile {
     user_id : number;
     adminUser : AdminUser;
   }
+  export interface Level {
+    name : string;
+  }
+  export interface Rejection {
+    reason: string;
+  }
   export interface AdminManagement {
+      Rejections: Rejection[];
+    Level : Level;
     request_id: number;
     title: string;
     campaign_id: number;
+    attention_time : string;
     det_management_id: number;
     client_id: number;
     management_id: number;

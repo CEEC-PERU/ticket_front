@@ -11,11 +11,12 @@ import { motion } from 'framer-motion';
 
 // Modal components
 import Modal from '../../../components/Modal';
-import { userInfo } from 'os';
+
 
 export default function Solicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
   const { adminManagement, loading, error , refetch} = useAdminManagement();
+  console.log(adminManagement)
   const { token , user } = useAuth();
  // States for modals
  const [showRechazoModal, setShowRechazoModal] = useState(false);
@@ -62,6 +63,8 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
       await submitRejection( rejection);
       refetch(); // Actualizar la lista después del rechazo
       setShowRechazoModal(false);
+      // Reset rejection reason after submission
+      setRejectionReason(''); // Clear the rejection reason input
     } catch (error) {
       console.error("Error al enviar el rechazo:", error);
     }
@@ -83,6 +86,8 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
         await handleUpdateRequest(selectedRequestId, updatePayload);
         refetch();
         setShowTimeModal(false);
+        setAttentionTime(''); // Clear the attention time input
+        setTimeUnit('hours'); // Reset the time unit to hours
       } catch (error) {
         console.error("Error al guardar el tiempo:", error);
       } finally {
@@ -173,6 +178,15 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
 
                   {/* Body */}
                   <div className="p-6">
+                  <h4 className="text-sm text-gray-600">
+                      <strong>Prioridad:</strong>   {request.Level.name}
+                    </h4>
+                    <p className="text-sm text-blue-800">
+                      <strong>Estado de Ticket:</strong> {request.state.name.trim()}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Número de Ticket:</strong> {request.number_ticket}
+                    </p>
                   <p className="text-sm text-gray-600">
                       <strong>Usuario Solicitante:</strong>  {request.user?.profile?.name } {request.user?.profile?.lastname}{' '}
                     </p>
@@ -182,15 +196,12 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                     <p className="text-sm text-gray-600">
                       <strong>Cliente:</strong> {request.TypeClient.name}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      <strong>Estado:</strong> {request.state.name.trim()}
-                    </p>
+                    
                     <p className="text-sm text-gray-600">
                       <strong>Gestión:</strong> {request.detailManagement.name}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      <strong>Número de Ticket:</strong> {request.number_ticket}
-                    </p>
+                   
+                   
                     <p className="text-sm text-gray-600">
   <strong>Estado de Aprobación:</strong>{" "}
   {request?.is_aproved === null
@@ -215,6 +226,16 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
   </p>
 )}
 
+
+{request.attention_time?.length > 0 ? (
+  <p className="text-sm text-gray-600">
+    <strong>Tiempo de Atención Estimado:</strong> {request.attention_time}
+  </p>
+) : (
+  <p className="text-sm text-gray-600 ">
+    <strong>Tiempo de Atención Estimado:</strong> No designa tiempo estimado
+  </p>
+)}
 
 
                     {/* Detalles y Archivos */}
@@ -244,6 +265,20 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                     </div>
 
                     {/* Mostrar el selector solo si el estado es "PENDIENTE" */}
+
+ <div className="mt-4">
+                      {request.Rejections.map((detail, index) => (
+                        <div key={index} className="mt-2">
+                          <p className="text-sm text-red-700">
+                            <strong>Motivo de Rechazo:</strong> {detail.reason}
+                          </p>
+                        
+                        </div>
+                      ))}
+                      
+                    </div>
+
+
 
 {request.state.name.trim() === 'PENDIENTE' && (
   <div className="mt-4">

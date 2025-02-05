@@ -13,11 +13,12 @@ import {PencilSquareIcon} from '@heroicons/react/24/solid';
 import FileInput from '../../../components/solicitante/Form/FileInput';
 // Modal components
 import Modal from '../../../components/Modal';
-import { userInfo } from 'os';
+
 
 export default function ListaSolicitud() {
   const [showSidebar, setShowSidebar] = useState(false);
   const { requestclient, loading, error , refetch} = useRequestClient();
+  console.log(requestclient)
   const { token , user } = useAuth();
 
   const [showModal, setShowModal] = useState(false); // Manage modal visibility
@@ -67,6 +68,9 @@ const userInfor = user as { id: number } | null;
       if (result) {
         setShowModal(false); // Close modal on successful update
         // Refetch or update the UI with the latest data if needed
+        setNewDetail(''); // Reset textarea field
+        setNewFiles([]); // Clear file input field
+        setFormData({ attachedDocuments: [] });
         refetch();
       }
     }
@@ -115,6 +119,15 @@ const userInfor = user as { id: number } | null;
 
                   {/* Body */}
                   <div className="p-6">
+                  <h4 className="text-sm text-gray-600">
+                      <strong>Prioridad:</strong>   {request.Level.name}
+                    </h4>
+                    <p className="text-sm text-blue-800">
+                      <strong>Estado de Ticket:</strong> {request.state.name.trim()}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Número de Ticket:</strong> {request.number_ticket}
+                    </p>
                   <p className="text-sm text-gray-600">
                       <strong>Usuario Solicitante:</strong>  {request.user?.profile?.name } {request.user?.profile?.lastname}{' '}
                     </p>
@@ -124,15 +137,12 @@ const userInfor = user as { id: number } | null;
                     <p className="text-sm text-gray-600">
                       <strong>Cliente:</strong> {request.TypeClient.name}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      <strong>Estado:</strong> {request.state.name.trim()}
-                    </p>
+                    
                     <p className="text-sm text-gray-600">
                       <strong>Gestión:</strong> {request.detailManagement.name}
                     </p>
-                    <p className="text-sm text-gray-600">
-                      <strong>Número de Ticket:</strong> {request.number_ticket}
-                    </p>
+                  
+                   
                     <p className="text-sm text-gray-600">
   <strong>Estado de Aprobación:</strong>{" "}
   {request?.is_aproved === null
@@ -150,6 +160,16 @@ const userInfor = user as { id: number } | null;
 ) : (
   <p className="text-sm text-gray-600 ">
     <strong>Responsable:</strong> No hay responsable asignado
+  </p>
+)}
+
+{request.attention_time?.length > 0 ? (
+  <p className="text-sm text-gray-600">
+    <strong>Tiempo de Atención Estimado:</strong> {request.attention_time}
+  </p>
+) : (
+  <p className="text-sm text-gray-600 ">
+    <strong>Tiempo de Atención Estimado:</strong> No designa tiempo estimado
   </p>
 )}
 

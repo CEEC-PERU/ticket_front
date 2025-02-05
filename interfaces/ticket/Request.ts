@@ -89,7 +89,7 @@ export interface RequestClient {
   level_id: number;
   number_ticket: number;
   is_aproved: boolean;
-  attention_time: string | null;
+  attention_time: string ;
   created_at: string;
   updated_at: string;
   user: User;
