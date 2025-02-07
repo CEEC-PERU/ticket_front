@@ -24,3 +24,18 @@ export interface ProfileRequest {
     }
   
   }
+
+
+export interface Profile {
+  name: string;    
+  lastname: string; 
+}
+
+// Interfaz para el usuario
+export interface UserProfile {
+  user_id: number; 
+  email: string;   
+  role_id: number; 
+  is_active: boolean; 
+  profile: Profile;  
+}

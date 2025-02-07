@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { HomeIcon , ArrowRightStartOnRectangleIcon , BellAlertIcon  , UserPlusIcon } from '@heroicons/react/24/solid';
+import { HomeIcon , ArrowRightStartOnRectangleIcon , BellAlertIcon  , UserPlusIcon , UserCircleIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarAdminProps {
@@ -61,6 +61,15 @@ const DrawerSolicitante: React.FC<SidebarAdminProps> = ({ showSidebar, setShowSi
             >
               <UserPlusIcon className="h-6 w-6"  />
               {showSidebar && <span className="ml-2 text-white">Clientes</span>}
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => handleNavigation('/administrador/profile')}
+              className="flex items-center p-4 text-white hover:bg-[#7959ef] w-full text-left"
+            >
+              <UserCircleIcon className="h-6 w-6"  />
+              {showSidebar && <span className="ml-2 text-white">Perfil</span>}
             </button>
           </li>
           <li>

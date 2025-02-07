@@ -6,8 +6,7 @@ declare module '@heroicons/react/24/solid' {
     export const HomeIcon: ComponentType<SVGProps<SVGSVGElement>>;
     export const UserIcon: ComponentType<SVGProps<SVGSVGElement>>;
     export const XIcon: ComponentType<SVGProps<SVGSVGElement>>;
-    export const SearchIcon: ComponentType<SVGProps<SVGSVGElement>>;
-  
+    export const SearchIcon: ComponentType<SVGProps<SVGSVGElement>>;  
     // Añadir íconos adicionales
     export const AcademicCapIcon: ComponentType<SVGProps<SVGSVGElement>>;
     export const ChevronDownIcon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -29,5 +28,6 @@ declare module '@heroicons/react/24/solid' {
     export const PlusCircleIcon : ComponentType<SVGProps<SVGSVGElement>>;
     export const BellAlertIcon : ComponentType<SVGProps<SVGSVGElement>>;
     export const UserPlusIcon : ComponentType<SVGProps<SVGSVGElement>>;
+    export const UserCircleIcon : ComponentType<SVGProps<SVGSVGElement>>;
   }
   

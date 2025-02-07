@@ -36,3 +36,5 @@ export const API_REJECTION = `${baseURL}/api/rejection`;
 
 
 export const DETAIL_REQUEST = `${baseURL}/api/detailrequest`;
+
+export const USER_API = `${baseURL}/api/users`;

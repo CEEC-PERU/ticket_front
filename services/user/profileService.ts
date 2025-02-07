@@ -4,6 +4,7 @@ import { ProfileRequest , ProfileResponse ,} from '../../interfaces/user/profile
 import { API_PROFILE} from '../../utils/Endpoints';
 import { Profile, UserInfo  } from "../../interfaces/user/login";
 
+
 export const getProfile = async (userToken: string, userId: number, allData = false): Promise<Profile | null | UserInfo> => {
     try {
       const config = {
@@ -28,5 +29,5 @@ export const getProfile = async (userToken: string, userId: number, allData = fa
       console.error('Error getting profile:', error);
       throw new Error('Error getting profile');
     }
-  };
+};
   
