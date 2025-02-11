@@ -179,7 +179,7 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                   {/* Body */}
                   <div className="p-6">
                   <h4 className="text-sm text-gray-600">
-                      <strong>Prioridad:</strong>   {request.Level.name}
+                      <strong>Prioridad:</strong>   {request.Level?.name}
                     </h4>
                     <p className="text-sm text-blue-800">
                       <strong>Estado de Ticket:</strong> {request.state.name.trim()}
@@ -191,10 +191,10 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
                       <strong>Usuario Solicitante:</strong>  {request.user?.profile?.name } {request.user?.profile?.lastname}{' '}
                     </p>
                     <p className="text-sm text-gray-600">
-                      <strong>Campaña:</strong> {request.campaign.name}
+                      <strong>Campaña:</strong> {request.campaign?.name}
                     </p>
                     <p className="text-sm text-gray-600">
-                      <strong>Cliente:</strong> {request.TypeClient.name}
+                      <strong>Cliente:</strong> {request.TypeClient?.name}
                     </p>
                     
                     <p className="text-sm text-gray-600">
@@ -218,7 +218,7 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
 
                     {request.adminTickets.length > 0 ? (
   <p className="text-sm text-gray-600">
-    <strong>Responsable:</strong> {request.adminTickets[0].adminUser.profile.name} {request.adminTickets[0].adminUser.profile.lastname}
+    <strong>Responsable:</strong> {request.adminTickets[0].adminUser?.profile?.name} {request.adminTickets[0].adminUser?.profile?.lastname}
   </p>
 ) : (
   <p className="text-sm text-gray-600 ">
