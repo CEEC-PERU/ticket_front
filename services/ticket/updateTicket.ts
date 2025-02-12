@@ -38,3 +38,21 @@ export const updateStateRequest = async (requestId: number, payload: UpdateState
     throw new Error('Error al actualizar la solicitud');
   }
 };
+
+export const updateStateFinish= async (requestId: number, payload: UpdateStateRequest) => {
+  try {
+    const response = await axios.put(`${API_TICKET}/finish/state/datos/${requestId}`, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error en la respuesta del servidor:', error.response?.data || error.message);
+    } else {
+      console.error('Error inesperado:', (error as Error).message);
+    }
+    throw new Error('Error al actualizar la solicitud');
+  }
+};

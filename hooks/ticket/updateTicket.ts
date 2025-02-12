@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateRequest, updateStateRequest } from '../../services/ticket/updateTicket';
+import { updateRequest, updateStateFinish, updateStateRequest } from '../../services/ticket/updateTicket';
 import { UpdateRequest, UpdateStateRequest} from '../../interfaces/ticket/Request';
 import { useAuth } from '../../context/AuthContext';
 export const useUpdateRequest = () => {
@@ -62,4 +62,29 @@ export const useUpdateStateRequest = () => {
   };
 
   return { handleUpdateStateRequest, loading, error };
+};
+
+
+export const useUpdateStateRequestFinish = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const { token , user } = useAuth();
+  const handleUpdateStateFinish = async (requestId: number, payload: UpdateStateRequest) => {
+
+    if (!token || !user) {
+        setLoading(false);
+        return;
+      }
+
+    try {
+      setLoading(true);
+      await updateStateFinish(requestId,  payload);
+    } catch (err) {
+      setError('Error al actualizar la solicitud');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { handleUpdateStateFinish, loading, error };
 };

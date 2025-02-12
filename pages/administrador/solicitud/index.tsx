@@ -4,7 +4,7 @@ import DrawerSolicitante from '../../../components/administrador/DrawerAdministr
 import './../../../app/globals.css';
 import Image from 'next/image';
 import { useAdminManagement } from '../../../hooks/management/useAdminManagement';
-import { useUpdateRequest  , useUpdateStateRequest} from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
+import { useUpdateRequest  , useUpdateStateRequest, useUpdateStateRequestFinish} from '../../../hooks/ticket/updateTicket'; // Asegúrate de importar el hook correctamente.
 import { submitRejection } from '../../../services/ticket/rejectionTicket';
 import { useAuth } from '../../../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -26,6 +26,7 @@ export default function Solicitud() {
 const [timeUnit, setTimeUnit] = useState("hours");
 const { handleUpdateRequest } = useUpdateRequest(); // Usa el hook aquí.
 const { handleUpdateStateRequest } = useUpdateStateRequest();
+const { handleUpdateStateFinish } = useUpdateStateRequestFinish();
 const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
 const [newState, setNewState] = useState<string | null>(null); // State for selecting new state
 const userInfor = user as { id: number } | null;
@@ -76,9 +77,15 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
   const handleSaveTime = async () => {
     if (selectedRequestId !== null) {
       const formattedAttentionTime = `${attentionTime} ${timeUnit === 'hours' ? 'horas' : 'días'}`;
+
+      const currentDate = new Date(); // Obtienes la fecha y hora actual
+
+
+
       const updatePayload = {
         is_aproved: true,
         attention_time: formattedAttentionTime,
+        time_pendiente :  currentDate
       };
 
       try {
@@ -127,7 +134,7 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
 
       try {
         setIsUpdatingState(true); // Set loading to true
-        await handleUpdateStateRequest(requestId, updatePayload);
+        await handleUpdateStateFinish(requestId, updatePayload);
         refetch();
       } catch (error) {
         console.error("Error al actualizar el estado:", error);

@@ -11,6 +11,7 @@ export interface Request {
 export interface UpdateRequest {
     is_aproved?: boolean;
     attention_time?: string;
+    time_pendiente? : Date;
 }
   
   export interface UpdateStateRequest {
