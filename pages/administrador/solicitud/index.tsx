@@ -71,6 +71,15 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     }
   };
   
+// Function to format the date
+
+
+const formatDate = (dateString: string | Date): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+  return date.toLocaleDateString('es-ES', options);
+};
+
 
 
   // Handle "Guardar Tiempo" action
@@ -110,8 +119,6 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
       const updatePayload = {
         state_id: newState === 'En proceso' ? 4 : 4, // Estado 4: En proceso, Estado 2: Cerrado
       };
-  
-     
       try {
         setIsUpdatingState(true); // Set loading to true
         await handleUpdateStateRequest(requestId, updatePayload);
@@ -142,7 +149,7 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
         setIsUpdatingState(false); // Set loading to false
       }
     }
-  };
+};
   
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
@@ -243,6 +250,32 @@ const handleRejectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     <strong>Tiempo de Atención Estimado:</strong> No designa tiempo estimado
   </p>
 )}
+
+
+{/* Display time tickets in formatted date */}
+{request.adminTickets.length > 0 && request.adminTickets[0].timeTickets.length > 0 && (
+                      <div className="mt-4">
+                        {request.adminTickets[0].timeTickets.map((timeTicket, index) => (
+                          <div key={index} className="text-sm text-gray-600">
+                           
+                            {timeTicket?.time_pendiente && (
+  <p><strong>Fecha de aprobación:</strong> {formatDate(timeTicket.time_pendiente)}</p>
+)}
+
+{timeTicket?.time_proceso && (
+  <p><strong>Tiempo de inicio:</strong> {formatDate(timeTicket.time_proceso)}</p>
+)}
+
+{timeTicket?.time_finalizado && (
+  <p><strong>Tiempo finalizado:</strong> {formatDate(timeTicket.time_finalizado)}</p>
+)}
+
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+
 
 
                     {/* Detalles y Archivos */}

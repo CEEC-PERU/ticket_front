@@ -37,9 +37,17 @@ export interface Profile {
     email: string;
     profile :Profile;
   }
+
+  export interface TimeTickets {
+    time_pendiente :Date;
+    time_proceso :Date;
+    time_finalizado :Date;
+  }
+
   export interface AdminTicket {
     user_id : number;
     adminUser : AdminUser;
+    timeTickets : TimeTickets[];
   }
   export interface Level {
     name : string;
