@@ -28,6 +28,8 @@ export default function ListaSolicitud() {
   const [isLoading, setIsLoading] = useState(false); // Track loading state for the button
 const { updateDetailRequest  } = useUpdateRequest();
 const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null); // Estado para almacenar el requestId
+const [filterState, setFilterState] = useState<string>(''); // 'PENDIENTE', 'REGISTRADO', or 'FINALIZADO'
+
 
 const userInfor = user as { id: number } | null;
 
@@ -96,14 +98,33 @@ const userInfor = user as { id: number } | null;
 
         {/* Main Content */}
         <div className="relative max-w-7xl mx-auto pt-16">
-         
+        <select
+  className="p-2 border border-gray-300 rounded-md mb-4"
+  value={filterState}
+  onChange={(e) => setFilterState(e.target.value)}
+>
+  <option value="">Todos</option>
+  <option value="REGISTRADO">REGISTRADO</option>
+  <option value="PENDIENTE">PENDIENTE</option>
+  <option value="EN PROCESO">EN PROCESO</option>
+  <option value="FINALIZADO">FINALIZADO</option>
+</select>
 
           {loading && <p className="text-gray-500">Cargando solicitudes...</p>}
           {error && <p className="text-red-500">Error: {error}</p>}
 
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6">
-              {requestclient.map((request) => (
+        
+
+{requestclient
+  .filter((request) => {
+    // If no filter is selected, show all requests
+    if (!filterState) return true;
+    // Only show requests that match the selected state
+    return request.state.name.trim() === filterState;
+  })
+  .map((request) => (
                 <motion.div
                   key={request.request_id}
                   className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform hover:shadow-xl border border-gray-200"
