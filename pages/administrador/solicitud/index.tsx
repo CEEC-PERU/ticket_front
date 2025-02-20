@@ -153,13 +153,13 @@ const formatDate = (dateString: string | Date): string => {
 };
   
   return (
-    <div className="flex h-screen bg-gray-100 text-gray-800">
+    <div className="flex h-full bg-gray-100 text-gray-800">
       {/* Drawer */}
       <DrawerSolicitante showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
 
       {/* Main Content */}
       <div
-        className={`flex-1 p-6 transition-all duration-300 ${
+        className={`flex-1 p-6 transition-all duration-300  bg-gray-100  ${
           showSidebar ? 'ml-64' : 'ml-16'
         }`}
       >
@@ -172,7 +172,7 @@ const formatDate = (dateString: string | Date): string => {
         
 
         {/* Main Content */}
-        <div className="relative max-w-7xl mx-auto pt-16">
+        <div className="relative max-w-7xl mx-auto pt-16   bg-gray-100">
          
 
         <select

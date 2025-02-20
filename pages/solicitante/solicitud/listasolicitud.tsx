@@ -80,7 +80,7 @@ const userInfor = user as { id: number } | null;
   
   
   return (
-    <div className="flex h-screen bg-gray-100 text-gray-800">
+    <div className="flex h-full bg-gray-100 text-gray-800 ">
       {/* Drawer */}
       <DrawerSolicitante showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
 
@@ -98,7 +98,7 @@ const userInfor = user as { id: number } | null;
 
         {/* Main Content */}
         <div className="relative max-w-7xl mx-auto pt-16">
-        <select
+            <select
   className="p-2 border border-gray-300 rounded-md mb-4"
   value={filterState}
   onChange={(e) => setFilterState(e.target.value)}
