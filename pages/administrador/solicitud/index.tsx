@@ -34,6 +34,7 @@ const userInfor = user as { id: number } | null;
 const [isUpdatingState, setIsUpdatingState] = useState(false);
 const [isRejecting, setIsRejecting] = useState(false);
 const [isSavingTime, setIsSavingTime] = useState(false);
+const [filterState, setFilterState] = useState<string>(''); // 'PENDIENTE', 'REGISTRADO', or 'FINALIZADO'
 
 const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setNewState(e.target.value);
@@ -168,16 +169,38 @@ const formatDate = (dateString: string | Date): string => {
           paddingtop="pt-4"
         />
 
+        
+
         {/* Main Content */}
         <div className="relative max-w-7xl mx-auto pt-16">
          
+
+        <select
+  className="p-2 border border-gray-300 rounded-md mb-4"
+  value={filterState}
+  onChange={(e) => setFilterState(e.target.value)}
+>
+  <option value="">Todos</option>
+  <option value="REGISTRADO">REGISTRADO</option>
+  <option value="PENDIENTE">PENDIENTE</option>
+  <option value="EN PROCESO">EN PROCESO</option>
+  <option value="FINALIZADO">FINALIZADO</option>
+</select>
+
 
           {loading && <p className="text-gray-500">Cargando solicitudes...</p>}
           {error && <p className="text-red-500">Error: {error}</p>}
 
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6">
-              {adminManagement.map((request) => (
+              {adminManagement
+  .filter((request) => {
+    // If no filter is selected, show all requests
+    if (!filterState) return true;
+    // Only show requests that match the selected state
+    return request.state.name.trim() === filterState;
+  })
+  .map((request) => (
                 <motion.div
                   key={request.request_id}
                   className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform hover:shadow-xl border border-gray-200"
@@ -254,26 +277,31 @@ const formatDate = (dateString: string | Date): string => {
 
 {/* Display time tickets in formatted date */}
 {request.adminTickets.length > 0 && request.adminTickets[0].timeTickets.length > 0 && (
-                      <div className="mt-4">
-                        {request.adminTickets[0].timeTickets.map((timeTicket, index) => (
-                          <div key={index} className="text-sm text-gray-600">
-                           
-                            {timeTicket?.time_pendiente && (
-  <p><strong>Fecha de aprobación:</strong> {formatDate(timeTicket.time_pendiente)}</p>
+  <div className="mt-4">
+    {request.adminTickets[0].timeTickets.map((timeTicket, index) => (
+      <div key={index} className="text-sm text-gray-600">
+        {timeTicket?.time_pendiente ? (
+          <p><strong>Fecha de aprobación:</strong> {formatDate(timeTicket.time_pendiente)}</p>
+        ) : (
+          <p><strong>Fecha de aprobación:</strong> No disponible</p>
+        )}
+
+        {timeTicket?.time_proceso ? (
+          <p><strong>Tiempo de inicio:</strong> {formatDate(timeTicket.time_proceso)}</p>
+        ) : (
+          <p><strong>Tiempo de inicio:</strong> No disponible</p>
+        )}
+
+        {timeTicket?.time_finalizado ? (
+          <p><strong>Tiempo finalizado:</strong> {formatDate(timeTicket.time_finalizado)}</p>
+        ) : (
+          <p><strong>Tiempo finalizado:</strong> No disponible</p>
+        )}
+      </div>
+    ))}
+  </div>
 )}
 
-{timeTicket?.time_proceso && (
-  <p><strong>Tiempo de inicio:</strong> {formatDate(timeTicket.time_proceso)}</p>
-)}
-
-{timeTicket?.time_finalizado && (
-  <p><strong>Tiempo finalizado:</strong> {formatDate(timeTicket.time_finalizado)}</p>
-)}
-
-                          </div>
-                        ))}
-                      </div>
-                    )}
 
 
 
