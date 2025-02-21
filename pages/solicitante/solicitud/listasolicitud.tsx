@@ -156,6 +156,9 @@ const userInfor = user as { id: number } | null;
                       <strong>Campaña:</strong> {request.campaign.name}
                     </p>
                     <p className="text-sm text-gray-600">
+                      <strong>Tipo de Gestión:</strong> {request.TypeManagement.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
                       <strong>Cliente:</strong> {request.TypeClient.name}
                     </p>
                     

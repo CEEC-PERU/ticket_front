@@ -231,13 +231,17 @@ const formatDate = (dateString: string | Date): string => {
                       <strong>Campaña:</strong> {request.campaign?.name}
                     </p>
                     <p className="text-sm text-gray-600">
+                      <strong>Gestión:</strong> {request.TypeManagement.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Tipo de Gestión:</strong> {request.detailManagement.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
                       <strong>Cliente:</strong> {request.TypeClient?.name}
                     </p>
                     
-                    <p className="text-sm text-gray-600">
-                      <strong>Gestión:</strong> {request.detailManagement.name}
-                    </p>
-                   
+                    
+                    
                    
                     <p className="text-sm text-gray-600">
   <strong>Estado de Aprobación:</strong>{" "}
