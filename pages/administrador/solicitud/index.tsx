@@ -432,6 +432,7 @@ const formatDate = (dateString: string | Date): string => {
         <Modal title="Detalle de Rechazo" onClose={() => setShowRechazoModal(false)}>
           <div className="space-y-4">
             <textarea
+            required
               className="w-full p-3 border border-gray-300 rounded-md"
               placeholder="Escriba el motivo del rechazo..."
               value={rejectionReason}
@@ -455,6 +456,7 @@ const formatDate = (dateString: string | Date): string => {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <input
+        required
           type="number"
           className="w-full p-3 border border-gray-300 rounded-md"
           placeholder="Ingrese el tiempo"
