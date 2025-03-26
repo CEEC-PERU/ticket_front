@@ -170,10 +170,10 @@ const userInfor = user as { id: number } | null;
                     <p className="text-sm text-gray-600">
   <strong>Estado de Aprobación:</strong>{" "}
   {request?.is_aproved === null
-    ? "Por aprobar"
+    ? "Registrado"
     : request?.is_aproved
     ? "Aprobado"
-    : "Rechazado"}
+    : "Registrado"}
 </p>
 
 

@@ -249,7 +249,7 @@ const formatDate = (dateString: string | Date): string => {
     ? "Por aprobar"
     : request?.is_aproved
     ? "Aprobado"
-    : "Rechazado"}
+    : "Registrado"}
 </p>
 
 
