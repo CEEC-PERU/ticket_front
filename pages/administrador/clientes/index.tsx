@@ -15,7 +15,7 @@ export default function Clientes() {
   const [passwordAlert, setPasswordAlert] = useState(false); // Para la alerta de la contraseña
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
-  const [role_id] = useState(2); // Rol por defecto (ejemplo: 3 = Cliente)
+  const [role_id] = useState(1); // Rol por defecto (ejemplo: 3 = Cliente)
   const [showPassword, setShowPassword] = useState(false); // Para mostrar u ocultar la contraseña
   const [successMessage, setSuccessMessage] = useState(false); // Para mostrar el mensaje de éxito
 
