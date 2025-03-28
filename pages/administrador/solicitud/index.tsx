@@ -224,6 +224,9 @@ const formatDate = (dateString: string | Date): string => {
                     <p className="text-sm text-gray-600">
                       <strong>Número de Ticket:</strong> {request.number_ticket}
                     </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Fecha de Registro de Ticket :</strong>  {formatDate(request.created_at)}
+                    </p>
                   <p className="text-sm text-gray-600">
                       <strong>Usuario Solicitante:</strong>  {request.user?.profile?.name } {request.user?.profile?.lastname}{' '}
                     </p>
