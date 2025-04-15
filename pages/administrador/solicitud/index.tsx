@@ -86,7 +86,18 @@ const formatDate = (dateString: string | Date): string => {
   // Handle "Guardar Tiempo" action
   const handleSaveTime = async () => {
     if (selectedRequestId !== null) {
-      const formattedAttentionTime = `${attentionTime} ${timeUnit === 'hours' ? 'horas' : 'días'}`;
+   
+
+      const formattedAttentionTime =
+  timeUnit === 'hours'
+    ? `${attentionTime} horas`
+    : new Date(attentionTime).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+
 
       const currentDate = new Date(); // Obtienes la fecha y hora actual
 
@@ -458,23 +469,36 @@ const formatDate = (dateString: string | Date): string => {
   <Modal title="Ingresar Tiempo de Atención" onClose={() => setShowTimeModal(false)}>
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <input
-        required
-          type="number"
-          className="w-full p-3 border border-gray-300 rounded-md"
-          placeholder="Ingrese el tiempo"
-          value={attentionTime}
-          onChange={handleAttentionTimeChange}
-        />
+       
+        {timeUnit === 'hours' ? (
+  <input
+  required
+    type="number"
+    className="w-full p-3 border border-gray-300 rounded-md"
+    placeholder="Ingrese el tiempo en horas"
+    value={attentionTime}
+    onChange={handleAttentionTimeChange}
+  />
+) : (
+  <input 
+  required
+    type="date"
+    className="w-full p-3 border border-gray-300 rounded-md"
+    value={attentionTime}
+    onChange={handleAttentionTimeChange}
+  />
+)}
+
         <select
           className="p-3 border border-gray-300 rounded-md"
           value={timeUnit}
           onChange={(e) => setTimeUnit(e.target.value)}
         >
           <option value="hours">Horas</option>
-          <option value="days">Días</option>
+          <option value="days">Fecha</option>
         </select>
       </div>
+      
       
 
       <button
