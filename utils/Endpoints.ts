@@ -11,7 +11,7 @@ export const API_AUTH = `${baseURL}/api/auth/signin`;
 export const API_PROFILE = `${baseURL}/api/profiles`;
 
 //clients
-export const API_TYPE_CLIENT= `${baseURL}/api/typeclients`;
+export const API_TYPE_CLIENT = `${baseURL}/api/typeclients`;
 
 //campaigns
 export const API_CAMPAIGNS = `${baseURL}/api/campaigns`;
@@ -33,7 +33,6 @@ export const API_LEVELS = `${baseURL}/api/levels`;
 
 //niveles -importancia ticket
 export const API_REJECTION = `${baseURL}/api/rejection`;
-
 
 export const DETAIL_REQUEST = `${baseURL}/api/detailrequest`;
 

@@ -29,7 +29,7 @@ const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
       <div className="space-y-2">
         {files.map((file, index) => (
           <div key={index} className="flex items-center justify-between">
-            <span className=' text-fuchsia-800 pt-5'>{file.name}</span>
+            <span className=" text-fuchsia-800 pt-5">{file.name}</span>
             <button
               type="button"
               className="text-red-600 "
@@ -44,13 +44,11 @@ const FileInput: React.FC<FileInputProps> = ({ onChange }) => {
         <input
           type="file"
           multiple
-          name='materials'
+          name="materials"
           className="p-3 border rounded-lg text-black pt-5"
           onChange={handleFileChange}
         />
-         
       </div>
-   
     </div>
   );
 };

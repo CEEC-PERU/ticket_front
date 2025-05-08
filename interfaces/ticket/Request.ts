@@ -1,23 +1,23 @@
 export interface Request {
-    det_management_id: number;
-    management_id: number;
-    campaign_id: number;
-    title : string;
-    request_det : string;
-    created_at: string;
-    updated_at: string;
+  det_management_id: number;
+  management_id: number;
+  campaign_id: number;
+  title: string;
+  request_det: string;
+  created_at: string;
+  updated_at: string;
 }
-   
+
 export interface UpdateRequest {
-    is_aproved?: boolean;
-    attention_time?: string;
-    time_pendiente? : Date;
+  is_aproved?: boolean;
+  attention_time?: string;
+  time_pendiente?: Date;
 }
-  
-  export interface UpdateStateRequest {
-    state_id: number;
+
+export interface UpdateStateRequest {
+  state_id: number;
 }
-  
+
 /////////////////////////////////////////////////////////////////
 
 export interface UserProfile {
@@ -68,9 +68,16 @@ export interface AdminUser {
   profile: UserProfile;
 }
 
+export interface TimeTickets {
+  time_pendiente: Date;
+  time_proceso: Date;
+  time_finalizado: Date;
+}
+
 export interface AdminTicket {
   user_id: number;
   adminUser: AdminUser;
+  timeTickets: TimeTickets[];
 }
 
 export interface Rejection {
@@ -90,7 +97,7 @@ export interface RequestClient {
   level_id: number;
   number_ticket: number;
   is_aproved: boolean;
-  attention_time: string ;
+  attention_time: string;
   created_at: string;
   updated_at: string;
   user: User;
