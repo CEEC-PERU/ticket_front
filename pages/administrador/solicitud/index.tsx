@@ -164,14 +164,22 @@ export default function Solicitud() {
 
   const handleSaveTime = async () => {
     if (selectedRequestId !== null) {
-      const formattedAttentionTime =
-        timeUnit === 'hours'
-          ? `${attentionTime} horas`
-          : new Date(attentionTime).toLocaleDateString('es-ES', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            });
+      let formattedAttentionTime;
+
+      if (timeUnit === 'hours') {
+        formattedAttentionTime = `${attentionTime} horas`;
+      } else {
+        // Para fechas, creamos un objeto Date y lo formateamos correctamente
+        const date = new Date(attentionTime);
+        // Añadimos un día para compensar la diferencia de zona horaria
+        date.setDate(date.getDate() + 1);
+
+        formattedAttentionTime = date.toLocaleDateString('es-ES', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      }
 
       const currentDate = new Date();
 
