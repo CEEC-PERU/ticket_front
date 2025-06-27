@@ -22,7 +22,7 @@ import AdminTable from '../../components/superadmin/AdminTable';
 import AdminPerformanceChart from '../../components/superadmin/TicketStatusChart';
 import AdminActivityChart from '../../components/superadmin/AdminActivityChart';
 import { useSuperAdmin } from '../../hooks/user/useAdministrador';
-
+import './../../app/globals.css';
 interface Admin {
   id: string;
   name: string;

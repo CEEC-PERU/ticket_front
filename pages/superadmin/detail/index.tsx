@@ -17,7 +17,7 @@ import {
 import { useAuth } from '../../../context/AuthContext';
 import Navbar from '../../../components/solicitante/Navbar';
 import DrawerSuperAdmin from '../../../components/superadmin/DrawerSuperadmin';
-
+import './../../../app/globals.css';
 import { useAdminDetail } from '../../../hooks/user/useAdministrador';
 import { AdminDetails } from '@/interfaces/user/superadmin';
 
