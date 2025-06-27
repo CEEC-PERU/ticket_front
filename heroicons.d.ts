@@ -38,4 +38,9 @@ declare module '@heroicons/react/24/solid' {
   export const CheckCircleIcon: ComponentType<SVGProps<SVGSVGElement>>;
   export const ClockIcon: ComponentType<SVGProps<SVGSVGElement>>;
   export const HourglassIcon: ComponentType<SVGProps<SVGSVGElement>>;
+  export const UsersIcon: ComponentType<SVGProps<SVGSVGElement>>;
+  export const ChartBarIcon: ComponentType<SVGProps<SVGSVGElement>>;
+  export const Cog6ToothIcon: ComponentType<SVGProps<SVGSVGElement>>;
+  export const ExclamationTriangleIcon: ComponentType<SVGProps<SVGSVGElement>>;
+  export const ArrowPathIcon: ComponentType<SVGProps<SVGSVGElement>>;
 }
