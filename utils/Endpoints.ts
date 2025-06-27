@@ -1,7 +1,7 @@
-export const baseURL = `http://localhost:4100`;
+export const baseURL = `https://ticket-qtech.onrender.com`;
 
 //http://localhost:4100 https://ticket-qtech.onrender.com
-export const API_SOCKET_URL = `http://localhost:4100`;
+export const API_SOCKET_URL = `https://ticket-qtech.onrender.com`;
 
 //authentication
 export const API_AUTH = `${baseURL}/api/auth/signin`;
